@@ -6,11 +6,10 @@ paths:
   artifacts: artifacts
   reports: reports
 
-# The exact revision is verified and pinned to a commit hash in phase-1/data.
-# Until then "main" marks the default branch as an explicit placeholder.
 dataset:
   id: Tobi-Bueck/customer-support-tickets
-  revision: main
+  revision: ddf1c81a5475992c4fa6752bf1e8b4e31f07bbeb
+  file: aa_dataset-tickets-multi-lang-5-2-50-version.csv
   language: en
 
 split:
@@ -18,3 +17,12 @@ split:
   validation: 0.10
   calibration: 0.10
   test: 0.10
+
+dedup:
+  # Near-duplicate detection: TF-IDF cosine similarity above this threshold
+  # joins two tickets into the same group (section 3.2).
+  near_duplicate_threshold: 0.90
+
+# Queue held out entirely from training to probe novel-queue detection
+# (ADR 0003, chosen in phase 1). A mid-volume queue keeps the main task intact.
+novel_queue: Service Outages and Maintenance

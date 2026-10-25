@@ -11,9 +11,11 @@ def _write_config(tmp_path: Path) -> Path:
     path = tmp_path / "config.yaml"
     path.write_text(
         "seed: 7\n"
+        "novel_queue: Spam\n"
         "dataset:\n"
         "  id: acme/tickets\n"
         "  revision: abc123\n"
+        "  file: tickets.csv\n"
         "split:\n"
         "  train: 0.6\n"
         "  validation: 0.2\n"

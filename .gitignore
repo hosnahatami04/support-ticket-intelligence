@@ -37,9 +37,10 @@ env/
 hf_cache/
 .huggingface/
 
-# Project data and artifacts (regenerated locally)
-data/
-artifacts/
+# Project data and artifacts (regenerated locally). Anchored to the repo root
+# so they do not also match the src/ticketintel/data package.
+/data/
+/artifacts/
 
 # OS and editor noise
 .DS_Store
