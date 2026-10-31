@@ -30,4 +30,21 @@ jobs:
         run: uv run mypy
 
       - name: Test
-        run: uv run pytest -m "not ml"
+        run: uv run pytest -m "not ml and not data"
+
+  data-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install data dependencies
+        run: uv sync --extra dev --extra data
+
+      - name: Data tests
+        run: uv run pytest -m "data"

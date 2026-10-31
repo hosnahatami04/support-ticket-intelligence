@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-import pandas as pd
 import pytest
 
-from ticketintel.config import Settings
-from ticketintel.data import schema
-from ticketintel.data.split import NOVEL, split
+pytestmark = pytest.mark.data
+pd = pytest.importorskip("pandas")
+
+from ticketintel.config import Settings  # noqa: E402
+from ticketintel.data import schema  # noqa: E402
+from ticketintel.data.split import NOVEL, split  # noqa: E402
 
 
 def _settings() -> Settings:

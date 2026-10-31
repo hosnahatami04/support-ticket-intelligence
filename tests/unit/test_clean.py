@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-import pandas as pd
 import pytest
 
-from ticketintel.data import schema
-from ticketintel.data.clean import SchemaError, clean
+pytestmark = pytest.mark.data
+pd = pytest.importorskip("pandas")
+
+from ticketintel.data import schema  # noqa: E402
+from ticketintel.data.clean import SchemaError, clean  # noqa: E402
 
 
 def _frame(rows: list[dict[str, object]]) -> pd.DataFrame:

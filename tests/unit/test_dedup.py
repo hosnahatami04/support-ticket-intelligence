@@ -1,9 +1,12 @@
 from __future__ import annotations
 
-import pandas as pd
+import pytest
 
-from ticketintel.data import schema
-from ticketintel.data.dedup import assign_groups
+pytestmark = pytest.mark.data
+pd = pytest.importorskip("pandas")
+
+from ticketintel.data import schema  # noqa: E402
+from ticketintel.data.dedup import assign_groups  # noqa: E402
 
 
 def _frame(texts: list[str]) -> pd.DataFrame:

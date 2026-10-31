@@ -1818,6 +1818,15 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+data = [
+    { name = "datasets" },
+    { name = "matplotlib" },
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "pyarrow" },
+    { name = "scikit-learn" },
+    { name = "scipy" },
+]
 dev = [
     { name = "hypothesis" },
     { name = "mypy" },
@@ -1845,32 +1854,33 @@ ml = [
 
 [package.metadata]
 requires-dist = [
-    { name = "datasets", marker = "extra == 'ml'", specifier = ">=2.18" },
+    { name = "datasets", marker = "extra == 'data'", specifier = ">=2.18" },
     { name = "hypothesis", marker = "extra == 'dev'", specifier = ">=6.100" },
-    { name = "matplotlib", marker = "extra == 'ml'", specifier = ">=3.8" },
+    { name = "matplotlib", marker = "extra == 'data'", specifier = ">=3.8" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.9" },
-    { name = "numpy", marker = "extra == 'ml'", specifier = ">=1.26" },
-    { name = "pandas", marker = "extra == 'ml'", specifier = ">=2.2" },
+    { name = "numpy", marker = "extra == 'data'", specifier = ">=1.26" },
+    { name = "pandas", marker = "extra == 'data'", specifier = ">=2.2" },
     { name = "pandas-stubs", marker = "extra == 'dev'", specifier = ">=2.2" },
     { name = "pip-audit", marker = "extra == 'dev'", specifier = ">=2.7" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.7" },
-    { name = "pyarrow", marker = "extra == 'ml'", specifier = ">=15.0" },
+    { name = "pyarrow", marker = "extra == 'data'", specifier = ">=15.0" },
     { name = "pydantic", specifier = ">=2.6" },
     { name = "pydantic-settings", specifier = ">=2.2" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=5.0" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.4" },
-    { name = "scikit-learn", marker = "extra == 'ml'", specifier = ">=1.4" },
-    { name = "scipy", marker = "extra == 'ml'", specifier = ">=1.11" },
+    { name = "scikit-learn", marker = "extra == 'data'", specifier = ">=1.4" },
+    { name = "scipy", marker = "extra == 'data'", specifier = ">=1.11" },
     { name = "scipy-stubs", marker = "extra == 'dev'", specifier = ">=1.11" },
     { name = "sentence-transformers", marker = "extra == 'ml'", specifier = ">=2.6" },
+    { name = "ticketintel", extras = ["data"], marker = "extra == 'ml'" },
     { name = "torch", marker = "extra == 'ml'", specifier = ">=2.2" },
     { name = "transformers", marker = "extra == 'ml'", specifier = ">=4.39" },
     { name = "typer", specifier = ">=0.12" },
     { name = "types-pyyaml", marker = "extra == 'dev'", specifier = ">=6.0" },
 ]
-provides-extras = ["ml", "dev"]
+provides-extras = ["data", "ml", "dev"]
 
 [[package]]
 name = "tokenizers"
