@@ -7,6 +7,8 @@ import pytest
 pytestmark = pytest.mark.data
 
 np = pytest.importorskip("numpy")
+pytest.importorskip("sklearn")
+pytest.importorskip("joblib")
 
 from ticketintel.models.base import TicketClassifier  # noqa: E402
 from ticketintel.models.tfidf import TfidfClassifier, select_c  # noqa: E402

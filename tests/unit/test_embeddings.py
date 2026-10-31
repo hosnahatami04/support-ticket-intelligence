@@ -7,6 +7,8 @@ import pytest
 pytestmark = pytest.mark.data
 
 np = pytest.importorskip("numpy")
+pytest.importorskip("sklearn")
+pytest.importorskip("joblib")
 
 from ticketintel.models.embeddings import EmbeddingCache, EmbeddingClassifier  # noqa: E402
 
