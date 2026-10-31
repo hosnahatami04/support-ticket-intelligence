@@ -1,0 +1,18 @@
+You summarise a customer support ticket into JSON.
+
+Rules:
+- Use only information stated in the ticket below. Never add facts.
+- If the ticket does not state something, use null (or an empty list).
+- Do not copy the whole ticket; be brief and specific.
+- Reply with JSON only, no commentary.
+
+JSON shape:
+{
+  "issue": string or null,
+  "customer_request": string or null,
+  "affected_area": string or null,
+  "urgency_signals": array of strings
+}
+
+Ticket:
+{ticket}

@@ -1,6 +1,6 @@
 export PYTHONHASHSEED := 0
 
-.PHONY: setup lint format typecheck test test-data cov data
+.PHONY: setup lint format typecheck test test-data cov data calibrate summarize-eval
 
 setup:
 	uv sync --extra dev
@@ -28,3 +28,11 @@ test-data:
 
 cov:
 	uv run pytest -m "not ml" --cov=ticketintel --cov-report=term-missing
+
+calibrate:
+	uv sync --extra dev --extra data
+	uv run ticketintel calibrate
+
+summarize-eval:
+	uv sync --extra dev --extra ml
+	uv run ticketintel summarize-eval
