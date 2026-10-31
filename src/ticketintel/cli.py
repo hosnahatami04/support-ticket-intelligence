@@ -92,5 +92,27 @@ def calibrate() -> None:
     typer.echo(f"calibration report: {report_path}")
 
 
+@app.command()
+def summarize_eval(generate: bool = True, latency: bool = True) -> None:
+    """Summarise the fixed test sample and report faithfulness KPIs."""
+    from ticketintel.config import load_settings
+    from ticketintel.summarize import evaluate as ev
+
+    settings = load_settings()
+    cfg = ev.SummarizerSettings.load(settings)
+    if generate:
+        ev.generate_summaries(settings, cfg)
+
+    results = ev.evaluate(settings, cfg)
+    if latency:
+        results["latency"] = ev.measure_latency(settings, cfg)
+    review_rows = results["_review_rows"]
+    assert isinstance(review_rows, list)
+    review_path = ev.write_review_file(review_rows, settings)
+    report_path = ev.write_report(results, settings)
+    typer.echo(f"summarization report: {report_path}")
+    typer.echo(f"nli review sample: {review_path}")
+
+
 if __name__ == "__main__":
     app()
