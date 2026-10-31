@@ -45,5 +45,17 @@ def data() -> None:
     typer.echo(f"data card: {card_path}")
 
 
+@app.command()
+def baseline() -> None:
+    """Train the TF-IDF baseline and write validation metrics to reports/interim."""
+    from ticketintel.config import load_settings
+    from ticketintel.evaluation import harness
+
+    settings = load_settings()
+    results = harness.run_tfidf_baseline(settings)
+    path = harness.write_interim(results, settings, "baseline_tfidf_validation.json")
+    typer.echo(f"baseline results: {path}")
+
+
 if __name__ == "__main__":
     app()
