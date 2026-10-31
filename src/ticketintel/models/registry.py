@@ -14,7 +14,11 @@ def build_model(name: str, settings: Settings) -> TicketClassifier:
         from ticketintel.models.embeddings import EmbeddingClassifier
 
         return EmbeddingClassifier(settings.paths.artifacts / "embedding_cache")
+    if name == "transformer":
+        from ticketintel.models.transformer import TransformerClassifier
+
+        return TransformerClassifier()
     raise ValueError(f"unknown model: {name!r}")
 
 
-AVAILABLE_MODELS = ("tfidf", "embeddings")
+AVAILABLE_MODELS = ("tfidf", "embeddings", "transformer")
