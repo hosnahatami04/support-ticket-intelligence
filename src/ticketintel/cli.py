@@ -78,5 +78,19 @@ def train_transformer(
     typer.echo(f"model comparison: {path}")
 
 
+@app.command()
+def calibrate() -> None:
+    """Fit the reliability thresholds on calibration and freeze configs/policy.yaml."""
+    from ticketintel.config import load_settings
+    from ticketintel.reliability import calibrate as calib
+
+    settings = load_settings()
+    results = calib.calibrate_queue(settings)
+    policy_path = calib.freeze_policy(results, settings)
+    report_path = calib.write_report(results, settings)
+    typer.echo(f"frozen policy: {policy_path}")
+    typer.echo(f"calibration report: {report_path}")
+
+
 if __name__ == "__main__":
     app()

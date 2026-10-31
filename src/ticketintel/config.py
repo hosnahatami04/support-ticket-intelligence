@@ -20,6 +20,7 @@ class Paths(BaseModel):
     data_processed: Path = Path("data/processed")
     artifacts: Path = Path("artifacts")
     reports: Path = Path("reports")
+    configs: Path = Path("configs")
 
 
 class Dataset(BaseModel):
