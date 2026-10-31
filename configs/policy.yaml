@@ -1,0 +1,5 @@
+queue:
+  abstention_threshold: 0.9175930416258576
+  conformal_alpha: 0.1
+  conformal_qhat: 0.9428661609915067
+  temperature: 1.3
