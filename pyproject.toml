@@ -71,7 +71,14 @@ files = ["src"]
 # These ML libraries ship no type information; stubs exist for pandas and scipy
 # (installed in the dev group) but not for these, so their imports are untyped.
 [[tool.mypy.overrides]]
-module = ["datasets.*", "sklearn.*", "joblib.*", "sentence_transformers.*"]
+module = [
+    "datasets.*",
+    "sklearn.*",
+    "joblib.*",
+    "sentence_transformers.*",
+    "torch.*",
+    "transformers.*",
+]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
