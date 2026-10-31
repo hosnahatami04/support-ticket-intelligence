@@ -56,3 +56,29 @@ def test_bootstrap_ci_brackets_point_and_is_deterministic() -> None:
     assert lo <= point <= hi
     again = metrics.bootstrap_ci(y_true, y_pred, metrics.macro_f1, n_samples=200, seed=1)
     assert (point, lo, hi) == again
+
+
+def test_all_wrong_scores_zero() -> None:
+    # Every prediction wrong, but labels disjoint so each class has zero F1.
+    y_true = ["a", "a", "a"]
+    y_pred = ["b", "b", "b"]
+    assert metrics.macro_f1(y_true, y_pred) == pytest.approx(0.0)
+
+
+def test_ordinal_mae_zero_when_exact() -> None:
+    labels = ["low", "high", "medium", "low"]
+    assert metrics.ordinal_mae(labels, labels) == pytest.approx(0.0)
+
+
+def test_confusion_matrix_labels_are_sorted_union() -> None:
+    labels, _ = metrics.confusion_matrix(["b", "a"], ["c", "a"])
+    assert labels == ["a", "b", "c"]
+
+
+def test_min_class_recall_ignores_labels_only_in_pred() -> None:
+    # A label that appears only in predictions is not a true class, so it must
+    # not be considered when finding the worst-recalled true class.
+    y_true = ["a", "a", "b"]
+    y_pred = ["a", "c", "b"]  # "c" only in pred
+    label, _ = metrics.min_class_recall(y_true, y_pred)
+    assert label in {"a", "b"}

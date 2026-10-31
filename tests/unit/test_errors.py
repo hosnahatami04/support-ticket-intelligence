@@ -23,3 +23,24 @@ def test_top_confusions_caps_sample_ids() -> None:
     pairs = top_confusions(y_true, y_pred, list(range(8)), max_ids=3)
     assert pairs[0].count == 8
     assert len(pairs[0].sample_ids) == 3
+
+
+def test_top_confusions_empty_when_all_correct() -> None:
+    y_true = ["a", "b", "c"]
+    assert top_confusions(y_true, y_true, [0, 1, 2]) == []
+
+
+def test_top_confusions_respects_top_k() -> None:
+    # Four distinct confusion pairs; top_k=2 keeps only the two largest.
+    y_true = ["a", "a", "a", "b", "b", "c", "d"]
+    y_pred = ["x", "x", "x", "y", "y", "z", "w"]  # a->x:3, b->y:2, c->z:1, d->w:1
+    pairs = top_confusions(y_true, y_pred, list(range(7)), top_k=2)
+    assert len(pairs) == 2
+    assert [p.count for p in pairs] == [3, 2]
+
+
+def test_top_confusions_carries_no_text_only_ids() -> None:
+    # Error reports must expose indices, never the ticket text (section 1.2).
+    pair = top_confusions(["a"], ["b"], [42])[0]
+    assert pair.sample_ids == [42]
+    assert not hasattr(pair, "text")
