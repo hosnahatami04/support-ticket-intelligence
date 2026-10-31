@@ -7,6 +7,7 @@ import pytest
 pytestmark = pytest.mark.data
 
 np = pytest.importorskip("numpy")
+pytest.importorskip("pandas")
 
 from ticketintel.evaluation import compare  # noqa: E402
 
