@@ -57,5 +57,26 @@ def baseline() -> None:
     typer.echo(f"baseline results: {path}")
 
 
+@app.command()
+def train_transformer(
+    time_budget_hours: float = 3.0,
+    max_length: int = 256,
+    train_subsample: int = 0,
+) -> None:
+    """Fine-tune DistilBERT and write the three-tier comparison table."""
+    from ticketintel.config import load_settings
+    from ticketintel.evaluation import compare, train_transformer
+
+    settings = load_settings()
+    rows = train_transformer.run(
+        settings,
+        time_budget_s=time_budget_hours * 3600,
+        max_length=max_length,
+        train_subsample=train_subsample or None,
+    )
+    path = compare.write_comparison(rows, settings)
+    typer.echo(f"model comparison: {path}")
+
+
 if __name__ == "__main__":
     app()
