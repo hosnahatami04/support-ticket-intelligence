@@ -25,6 +25,7 @@ class Paths(BaseModel):
 class Dataset(BaseModel):
     id: str
     revision: str
+    file: str
     language: str = "en"
 
 
@@ -33,6 +34,10 @@ class Split(BaseModel):
     validation: float = 0.10
     calibration: float = 0.10
     test: float = 0.10
+
+
+class Dedup(BaseModel):
+    near_duplicate_threshold: float = 0.90
 
 
 class Settings(BaseSettings):
@@ -47,6 +52,8 @@ class Settings(BaseSettings):
     paths: Paths = Field(default_factory=Paths)
     dataset: Dataset
     split: Split = Field(default_factory=Split)
+    dedup: Dedup = Field(default_factory=Dedup)
+    novel_queue: str
 
     @classmethod
     def settings_customise_sources(

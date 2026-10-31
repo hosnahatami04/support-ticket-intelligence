@@ -28,5 +28,22 @@ def main(
     configure_logging(log_level)
 
 
+@app.command()
+def data() -> None:
+    """Build the processed dataset and data card from the pinned source."""
+    # Imported lazily so the CLI and its tests stay free of the ml dependencies.
+    from ticketintel.config import load_settings
+    from ticketintel.data import card, pipeline
+    from ticketintel.data.load import load_english_tickets
+
+    settings = load_settings()
+    raw = load_english_tickets(settings)
+    frame = pipeline.build(settings, raw=raw)
+    processed = pipeline.save_processed(frame, settings)
+    card_path = card.write(frame, settings, raw_rows=len(raw))
+    typer.echo(f"processed dataset: {processed}")
+    typer.echo(f"data card: {card_path}")
+
+
 if __name__ == "__main__":
     app()
