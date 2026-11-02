@@ -133,5 +133,27 @@ def evaluate(figures: bool = True, write_smoke: bool = False) -> None:
     typer.echo(f"report: {md_path}")
 
 
+@app.command()
+def score_nli_review(
+    path: str = "reports/interim/nli_review_sample.csv",
+) -> None:
+    """Score a completed NLI review sheet against the model's own labels."""
+    from pathlib import Path
+
+    from ticketintel.summarize.review import ReviewError, score_review
+
+    try:
+        result = score_review(Path(path))
+    except ReviewError as exc:
+        typer.echo(f"cannot score the review: {exc}")
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(f"rows reviewed: {result.reviewed}")
+    typer.echo(f"model agreed with the reviewer: {result.agreements}")
+    typer.echo(f"NLI accuracy: {result.accuracy:.4f}")
+    typer.echo(f"claimed support the reviewer rejected: {result.false_entailments}")
+    typer.echo(f"missed support the reviewer saw: {result.false_non_entailments}")
+
+
 if __name__ == "__main__":
     app()
