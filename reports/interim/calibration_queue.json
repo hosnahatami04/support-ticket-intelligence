@@ -1,0 +1,17 @@
+{
+  "abstention_threshold": 0.9175930416258576,
+  "aurc": 0.22562893171620124,
+  "conformal_alpha": 0.1,
+  "conformal_qhat": 0.9428661609915067,
+  "coverage_at_risk_05": 0.07731629392971245,
+  "coverage_at_risk_10": 0.14057507987220447,
+  "coverage_at_risk_15": 0.28626198083067095,
+  "coverage_at_risk_20": 0.4293929712460064,
+  "coverage_at_risk_25": 0.5533546325878594,
+  "coverage_at_risk_30": 0.7015974440894569,
+  "coverage_at_threshold": 0.07731629392971245,
+  "ece_after": 0.032391163699442574,
+  "ece_before": 0.06435639287300934,
+  "novel_queue_auroc": 0.5576698935837997,
+  "temperature": 1.3
+}

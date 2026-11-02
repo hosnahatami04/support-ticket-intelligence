@@ -11,9 +11,11 @@ def _write_config(tmp_path: Path) -> Path:
     path = tmp_path / "config.yaml"
     path.write_text(
         "seed: 7\n"
+        "novel_queue: Spam\n"
         "dataset:\n"
         "  id: acme/tickets\n"
         "  revision: abc123\n"
+        "  file: tickets.csv\n"
         "split:\n"
         "  train: 0.6\n"
         "  validation: 0.2\n"
@@ -55,3 +57,21 @@ def test_non_mapping_config_rejected(tmp_path: Path) -> None:
 
 def test_default_config_path_exists() -> None:
     assert DEFAULT_CONFIG_PATH.exists()
+
+
+def test_config_is_found_from_the_working_directory(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Regression: when the package is installed (container, wheel) the source
+    # tree is not two levels above the module, so the config must resolve
+    # relative to the working directory instead.
+    configs = tmp_path / "configs"
+    configs.mkdir()
+    (configs / "default.yaml").write_text(
+        "seed: 11\nnovel_queue: Outages\ndataset:\n  id: x/y\n  revision: r\n  file: f.csv\n",
+        encoding="utf-8",
+    )
+    monkeypatch.chdir(tmp_path)
+    settings = load_settings()
+    assert settings.seed == 11
+    assert settings.dataset.id == "x/y"

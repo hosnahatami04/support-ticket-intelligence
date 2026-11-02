@@ -11,8 +11,21 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_CONFIG_PATH = REPO_ROOT / "configs" / "default.yaml"
+# In a source checkout the configs live two levels above this module; once the
+# package is installed (a container, a wheel) that path points inside
+# site-packages, so the working directory is tried first.
+_SOURCE_ROOT = Path(__file__).resolve().parents[2]
+
+
+def _default_config_path() -> Path:
+    cwd_config = Path.cwd() / "configs" / "default.yaml"
+    if cwd_config.exists():
+        return cwd_config
+    return _SOURCE_ROOT / "configs" / "default.yaml"
+
+
+REPO_ROOT = _SOURCE_ROOT
+DEFAULT_CONFIG_PATH = _default_config_path()
 
 
 class Paths(BaseModel):
@@ -20,11 +33,13 @@ class Paths(BaseModel):
     data_processed: Path = Path("data/processed")
     artifacts: Path = Path("artifacts")
     reports: Path = Path("reports")
+    configs: Path = Path("configs")
 
 
 class Dataset(BaseModel):
     id: str
     revision: str
+    file: str
     language: str = "en"
 
 
@@ -33,6 +48,10 @@ class Split(BaseModel):
     validation: float = 0.10
     calibration: float = 0.10
     test: float = 0.10
+
+
+class Dedup(BaseModel):
+    near_duplicate_threshold: float = 0.90
 
 
 class Settings(BaseSettings):
@@ -47,6 +66,8 @@ class Settings(BaseSettings):
     paths: Paths = Field(default_factory=Paths)
     dataset: Dataset
     split: Split = Field(default_factory=Split)
+    dedup: Dedup = Field(default_factory=Dedup)
+    novel_queue: str
 
     @classmethod
     def settings_customise_sources(
@@ -72,5 +93,6 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 
 
 def load_settings(config_path: Path | None = None) -> Settings:
-    path = config_path or DEFAULT_CONFIG_PATH
+    # Resolved per call so a process that changes directory still finds it.
+    path = config_path or _default_config_path()
     return Settings(**_load_yaml(path))

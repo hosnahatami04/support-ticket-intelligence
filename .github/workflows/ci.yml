@@ -21,13 +21,80 @@ jobs:
         run: uv sync --extra dev
 
       - name: Lint
-        run: uv run ruff check src tests
+        run: uv run ruff check src tests benchmarks
 
       - name: Format check
-        run: uv run ruff format --check src tests
+        run: uv run ruff format --check src tests benchmarks
 
       - name: Typecheck
         run: uv run mypy
 
       - name: Test
-        run: uv run pytest -m "not ml"
+        run: uv run pytest -m "not ml and not data"
+
+  data-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install data and service dependencies
+        run: uv sync --extra dev --extra data --extra service
+
+      - name: Data tests with coverage gate
+        run: >
+          uv run pytest -m "not ml"
+          --cov=ticketintel --cov-report=term-missing --cov-fail-under=85
+
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install dev dependencies
+        run: uv sync --extra dev
+
+      # Audits the locked dependency set rather than the environment, so the
+      # local editable package does not fail the strict run.
+      - name: Export the locked requirements
+        run: >
+          uv export --no-emit-project --no-hashes
+          --extra dev --extra data --extra service -o requirements-audit.txt
+
+      - name: Audit dependencies
+        run: uv run pip-audit --strict -r requirements-audit.txt
+
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the runtime image
+        run: docker build --target runtime -t ticketintel:ci .
+
+      - name: Check the image starts and reports health
+        run: |
+          docker run -d --name ticketintel-ci -p 8000:8000 ticketintel:ci
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:8000/health >/dev/null 2>&1; then
+              echo "health endpoint responded"
+              docker rm -f ticketintel-ci
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "the service never became reachable"
+          docker logs ticketintel-ci
+          docker rm -f ticketintel-ci
+          exit 1

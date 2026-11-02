@@ -1,0 +1,263 @@
+{
+  "priority": {
+    "c_scores": {
+      "0.1": 0.49804430844166764,
+      "0.3": 0.5347450162354753,
+      "1.0": 0.5668753387725042,
+      "3.0": 0.5874585383108938,
+      "10.0": 0.6072558780799603,
+      "30.0": 0.6041900132080721,
+      "100.0": 0.6103703401971061
+    },
+    "macro_f1": 0.6103703401971061,
+    "macro_f1_ci": [
+      0.5846005119607717,
+      0.63507414740341
+    ],
+    "min_class_recall": {
+      "label": "low",
+      "recall": 0.5321637426900585
+    },
+    "ordinal_mae": 0.44550669216061184,
+    "ordinal_mae_ci": [
+      0.4155194391332058,
+      0.47609942638623326
+    ],
+    "per_class_f1": {
+      "high": 0.6566901408450705,
+      "low": 0.5408618127786032,
+      "medium": 0.6335590669676449
+    },
+    "selected_c": 100.0,
+    "task": "priority",
+    "top_confusions": [
+      {
+        "count": 158,
+        "pred_label": "high",
+        "sample_ids": [
+          7,
+          33,
+          47,
+          53,
+          54
+        ],
+        "true_label": "medium"
+      },
+      {
+        "count": 126,
+        "pred_label": "medium",
+        "sample_ids": [
+          9,
+          13,
+          16,
+          20,
+          24
+        ],
+        "true_label": "high"
+      },
+      {
+        "count": 106,
+        "pred_label": "medium",
+        "sample_ids": [
+          10,
+          14,
+          26,
+          50,
+          64
+        ],
+        "true_label": "low"
+      },
+      {
+        "count": 97,
+        "pred_label": "low",
+        "sample_ids": [
+          0,
+          2,
+          69,
+          79,
+          90
+        ],
+        "true_label": "medium"
+      },
+      {
+        "count": 54,
+        "pred_label": "high",
+        "sample_ids": [
+          5,
+          30,
+          34,
+          76,
+          102
+        ],
+        "true_label": "low"
+      },
+      {
+        "count": 52,
+        "pred_label": "low",
+        "sample_ids": [
+          22,
+          39,
+          55,
+          88,
+          95
+        ],
+        "true_label": "high"
+      }
+    ]
+  },
+  "queue": {
+    "c_scores": {
+      "0.1": 0.34410293621937116,
+      "0.3": 0.3883459096656547,
+      "1.0": 0.46189419235490753,
+      "3.0": 0.5248755654409414,
+      "10.0": 0.5606766440593552,
+      "30.0": 0.5779673513860835,
+      "100.0": 0.5770726161099836
+    },
+    "macro_f1": 0.5779673513860835,
+    "macro_f1_ci": [
+      0.5392657309713396,
+      0.6115531941646379
+    ],
+    "min_class_recall": {
+      "label": "Human Resources",
+      "recall": 0.4
+    },
+    "per_class_f1": {
+      "Billing and Payments": 0.8543046357615894,
+      "Customer Service": 0.4939271255060729,
+      "General Inquiry": 0.6153846153846154,
+      "Human Resources": 0.5490196078431373,
+      "IT Support": 0.5204081632653061,
+      "Product Support": 0.49275362318840576,
+      "Returns and Exchanges": 0.55,
+      "Sales and Pre-Sales": 0.4941176470588235,
+      "Technical Support": 0.6317907444668008
+    },
+    "selected_c": 30.0,
+    "task": "queue",
+    "top_confusions": [
+      {
+        "count": 75,
+        "pred_label": "Technical Support",
+        "sample_ids": [
+          44,
+          51,
+          58,
+          68,
+          106
+        ],
+        "true_label": "Product Support"
+      },
+      {
+        "count": 64,
+        "pred_label": "Product Support",
+        "sample_ids": [
+          6,
+          40,
+          43,
+          61,
+          63
+        ],
+        "true_label": "Technical Support"
+      },
+      {
+        "count": 55,
+        "pred_label": "Technical Support",
+        "sample_ids": [
+          41,
+          60,
+          67,
+          135,
+          142
+        ],
+        "true_label": "IT Support"
+      },
+      {
+        "count": 43,
+        "pred_label": "Technical Support",
+        "sample_ids": [
+          65,
+          110,
+          124,
+          155,
+          240
+        ],
+        "true_label": "Customer Service"
+      },
+      {
+        "count": 41,
+        "pred_label": "IT Support",
+        "sample_ids": [
+          13,
+          18,
+          26,
+          130,
+          146
+        ],
+        "true_label": "Technical Support"
+      },
+      {
+        "count": 40,
+        "pred_label": "Product Support",
+        "sample_ids": [
+          29,
+          33,
+          105,
+          167,
+          246
+        ],
+        "true_label": "Customer Service"
+      },
+      {
+        "count": 40,
+        "pred_label": "Customer Service",
+        "sample_ids": [
+          115,
+          200,
+          206,
+          248,
+          436
+        ],
+        "true_label": "Technical Support"
+      },
+      {
+        "count": 39,
+        "pred_label": "Customer Service",
+        "sample_ids": [
+          21,
+          88,
+          140,
+          154,
+          196
+        ],
+        "true_label": "Product Support"
+      },
+      {
+        "count": 23,
+        "pred_label": "IT Support",
+        "sample_ids": [
+          32,
+          262,
+          342,
+          350,
+          367
+        ],
+        "true_label": "Customer Service"
+      },
+      {
+        "count": 18,
+        "pred_label": "IT Support",
+        "sample_ids": [
+          48,
+          76,
+          132,
+          267,
+          272
+        ],
+        "true_label": "Product Support"
+      }
+    ]
+  }
+}

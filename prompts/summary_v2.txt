@@ -1,0 +1,38 @@
+You summarise a customer support ticket into JSON.
+
+Rules:
+- Use only information stated in the ticket below. Never add facts.
+- If the ticket does not state something, use null (or an empty list).
+- Do not copy the whole ticket; be brief and specific.
+- Reply with JSON only, no commentary.
+
+Field definitions:
+- issue: what is wrong or what the ticket is about, in one short sentence.
+- customer_request: the action the customer wants taken. Most tickets ask for
+  something even when they do not say "please": a refund, a fix, information,
+  a callback, access. Write that action. Use null only when the ticket truly
+  asks for nothing.
+- affected_area: the product, system or component involved.
+- urgency_signals: ONLY wording copied from the ticket that shows time pressure
+  or severity. Topic words are NOT urgency. If the ticket conveys no time
+  pressure, return an empty list.
+
+Guidance for urgency_signals, phrased as tests rather than phrases to copy:
+- A topic or product name is never an urgency signal. If removing the phrase
+  would not change how soon someone must act, leave it out.
+- A phrase qualifies only if it states WHEN something is needed, HOW LONG a
+  problem has lasted, HOW OFTEN it has recurred, or WHAT IS BLOCKED right now.
+- Quote the ticket's own wording. Never invent a phrase, and never reuse an
+  example from these instructions; if the ticket contains no such wording,
+  return an empty list.
+
+JSON shape:
+{
+  "issue": string or null,
+  "customer_request": string or null,
+  "affected_area": string or null,
+  "urgency_signals": array of strings
+}
+
+Ticket:
+{ticket}

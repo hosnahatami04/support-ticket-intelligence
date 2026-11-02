@@ -28,5 +28,132 @@ def main(
     configure_logging(log_level)
 
 
+@app.command()
+def data() -> None:
+    """Build the processed dataset and data card from the pinned source."""
+    # Imported lazily so the CLI and its tests stay free of the ml dependencies.
+    from ticketintel.config import load_settings
+    from ticketintel.data import card, pipeline
+    from ticketintel.data.load import load_english_tickets
+
+    settings = load_settings()
+    raw = load_english_tickets(settings)
+    frame = pipeline.build(settings, raw=raw)
+    processed = pipeline.save_processed(frame, settings)
+    card_path = card.write(frame, settings, raw_rows=len(raw))
+    typer.echo(f"processed dataset: {processed}")
+    typer.echo(f"data card: {card_path}")
+
+
+@app.command()
+def baseline() -> None:
+    """Train the TF-IDF baseline and write validation metrics to reports/interim."""
+    from ticketintel.config import load_settings
+    from ticketintel.evaluation import harness
+
+    settings = load_settings()
+    results = harness.run_tfidf_baseline(settings)
+    path = harness.write_interim(results, settings, "baseline_tfidf_validation.json")
+    typer.echo(f"baseline results: {path}")
+
+
+@app.command()
+def train_transformer(
+    time_budget_hours: float = 3.0,
+    max_length: int = 256,
+    train_subsample: int = 0,
+) -> None:
+    """Fine-tune DistilBERT and write the three-tier comparison table."""
+    from ticketintel.config import load_settings
+    from ticketintel.evaluation import compare, train_transformer
+
+    settings = load_settings()
+    rows = train_transformer.run(
+        settings,
+        time_budget_s=time_budget_hours * 3600,
+        max_length=max_length,
+        train_subsample=train_subsample or None,
+    )
+    path = compare.write_comparison(rows, settings)
+    typer.echo(f"model comparison: {path}")
+
+
+@app.command()
+def calibrate() -> None:
+    """Fit the reliability thresholds on calibration and freeze configs/policy.yaml."""
+    from ticketintel.config import load_settings
+    from ticketintel.reliability import calibrate as calib
+
+    settings = load_settings()
+    results = calib.calibrate_queue(settings)
+    policy_path = calib.freeze_policy(results, settings)
+    report_path = calib.write_report(results, settings)
+    typer.echo(f"frozen policy: {policy_path}")
+    typer.echo(f"calibration report: {report_path}")
+
+
+@app.command()
+def summarize_eval(generate: bool = True, latency: bool = True) -> None:
+    """Summarise the fixed test sample and report faithfulness KPIs."""
+    from ticketintel.config import load_settings
+    from ticketintel.summarize import evaluate as ev
+
+    settings = load_settings()
+    cfg = ev.SummarizerSettings.load(settings)
+    if generate:
+        ev.generate_summaries(settings, cfg)
+
+    results = ev.evaluate(settings, cfg)
+    if latency:
+        results["latency"] = ev.measure_latency(settings, cfg)
+    review_rows = results["_review_rows"]
+    assert isinstance(review_rows, list)
+    review_path = ev.write_review_file(review_rows, settings)
+    report_path = ev.write_report(results, settings)
+    typer.echo(f"summarization report: {report_path}")
+    typer.echo(f"nli review sample: {review_path}")
+
+
+@app.command()
+def evaluate(figures: bool = True, write_smoke: bool = False) -> None:
+    """Evaluate once on test with the frozen policy and write the final report."""
+    from ticketintel.config import load_settings
+    from ticketintel.evaluation import final, report, run_final
+
+    settings = load_settings()
+    results = run_final.run(settings)
+    json_path = final.write_results(results, settings)
+    md_path = report.write_results_md(results, settings)
+    if figures:
+        for path in run_final.make_figures(settings):
+            typer.echo(f"figure: {path}")
+    if write_smoke:
+        typer.echo(f"smoke kpis: {run_final.write_smoke_kpis(results, settings)}")
+    typer.echo(f"results: {json_path}")
+    typer.echo(f"report: {md_path}")
+
+
+@app.command()
+def score_nli_review(
+    path: str = "reports/interim/nli_review_sample.csv",
+) -> None:
+    """Score a completed NLI review sheet against the model's own labels."""
+    from pathlib import Path
+
+    from ticketintel.summarize.review import ReviewError, score_review
+
+    try:
+        result = score_review(Path(path))
+    except ReviewError as exc:
+        typer.echo(f"cannot score the review: {exc}")
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(f"rows reviewed: {result.reviewed}")
+    typer.echo(f"model agreed with the reviewer: {result.agreements}")
+    typer.echo(f"NLI accuracy: {result.accuracy:.4f}")
+    typer.echo(f"claimed support the reviewer rejected: {result.false_entailments}")
+    typer.echo(f"missed support the reviewer saw: {result.false_non_entailments}")
+
+
 if __name__ == "__main__":
     app()

@@ -17,16 +17,34 @@ dependencies = [
 ticketintel = "ticketintel.cli:app"
 
 [project.optional-dependencies]
-ml = [
+# Lighter data-science stack used by the data pipeline and its tests. Kept
+# separate from the transformer stack so CI can exercise the data tests without
+# pulling in torch.
+data = [
     "numpy>=1.26",
     "pandas>=2.2",
     "pyarrow>=15.0",
     "scikit-learn>=1.4",
+    "scipy>=1.11",
     "datasets>=2.18",
+    "matplotlib>=3.8",
+]
+# Service layer: the API, its metrics and the demo console. Kept separate so
+# the light CI job does not install a web stack to run unit tests.
+service = [
+    "ticketintel[data]",
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "prometheus-client>=0.20",
+    "streamlit>=1.33",
+    "httpx>=0.27",
+    "requests>=2.31",
+]
+ml = [
+    "ticketintel[data]",
     "sentence-transformers>=2.6",
     "torch>=2.2",
     "transformers>=4.39",
-    "matplotlib>=3.8",
 ]
 dev = [
     "pytest>=8.0",
@@ -35,6 +53,8 @@ dev = [
     "ruff>=0.4",
     "mypy>=1.9",
     "types-PyYAML>=6.0",
+    "pandas-stubs>=2.2",
+    "scipy-stubs>=1.11",
     "pre-commit>=3.7",
     "pip-audit>=2.7",
 ]
@@ -59,12 +79,57 @@ python_version = "3.11"
 strict = true
 files = ["src"]
 
+# These ML libraries ship no type information; stubs exist for pandas and scipy
+# (installed in the dev group) but not for these, so their imports are untyped.
+[[tool.mypy.overrides]]
+module = [
+    "datasets.*",
+    "sklearn.*",
+    "joblib.*",
+    "sentence_transformers.*",
+    "torch.*",
+    "transformers.*",
+    "fastapi.*",
+    "starlette.*",
+    "prometheus_client.*",
+    "streamlit.*",
+    "requests.*",
+    "uvicorn.*",
+    "matplotlib.*",
+]
+ignore_missing_imports = true
+
+# Route decorators are typed when fastapi is installed, but the light CI job
+# type-checks without the service extra, where they degrade to Any and trip
+# strict mode's untyped-decorator rule. The route bodies stay fully typed.
+[[tool.mypy.overrides]]
+module = ["ticketintel.service.api"]
+disallow_untyped_decorators = false
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [
-    "ml: tests that require heavy ML dependencies or models",
+    "ml: tests that require the transformer stack (torch, transformers)",
+    "data: tests that require the data-science stack (pandas, scikit-learn)",
 ]
 
 [tool.coverage.run]
 source = ["ticketintel"]
-omit = ["src/ticketintel/ui/*"]
+# The UI and the offline drivers are excluded from the coverage gate: each one
+# is a thin script whose body fits models on the real dataset or calls the local
+# model server, so a unit test of it would just re-run the pipeline. They are
+# exercised by `make data`, `ticketintel evaluate` and the container smoke test
+# instead. Everything they call - the models, metrics, reliability layer,
+# summarizer and service - is covered here.
+omit = [
+    "src/ticketintel/ui/*",
+    "src/ticketintel/data/load.py",
+    "src/ticketintel/data/pipeline.py",
+    "src/ticketintel/data/card.py",
+    "src/ticketintel/evaluation/harness.py",
+    "src/ticketintel/evaluation/ablations.py",
+    "src/ticketintel/evaluation/run_final.py",
+    "src/ticketintel/evaluation/train_transformer.py",
+    "src/ticketintel/models/transformer.py",
+    "src/ticketintel/summarize/evaluate.py",
+]

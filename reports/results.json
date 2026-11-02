@@ -1,0 +1,109 @@
+{
+  "ablations": {
+    "calibration_and_policy": {
+      "aurc_with_scaling": 0.20459408636477994,
+      "aurc_without_scaling": 0.2043646462922922,
+      "ece_with_scaling": 0.0379448810183508,
+      "ece_without_scaling": 0.06431796185963985,
+      "threshold_only_coverage": 0.07721761327377154,
+      "threshold_only_error": 0.03305785123966942,
+      "threshold_plus_conformal_coverage": 0.07657945118059988,
+      "threshold_plus_conformal_error": 0.03333333333333333
+    },
+    "features": {
+      "char_gain": -0.0053647805306856755,
+      "word_only": 0.5833321319167691,
+      "word_plus_char": 0.5779673513860835
+    },
+    "split_strategy": {
+      "group_aware_macro_f1": 0.6140094834098941,
+      "inflation": 0.07307585989559584,
+      "random_split_macro_f1": 0.68708534330549
+    }
+  },
+  "priority": {
+    "macro_f1": 0.6169309663002686,
+    "macro_f1_ci": [
+      0.5908646931796936,
+      0.6407307308390375
+    ],
+    "ordinal_mae": 0.4358647096362476,
+    "ordinal_mae_ci": [
+      0.406509253350351,
+      0.46778876834716016
+    ]
+  },
+  "provenance": {
+    "dataset_id": "Tobi-Bueck/customer-support-tickets",
+    "dataset_revision": "ddf1c81a5475992c4fa6752bf1e8b4e31f07bbeb",
+    "git_revision": "c676d904597d57413febec5cf48a290a846a87de",
+    "processed_data_sha256": "d5a1b29844089e162cfdbe62a45d5e8f81819e6d2843249f0180147d9fc03a9f",
+    "seed": "42"
+  },
+  "queue": {
+    "aurc": 0.20459408636477994,
+    "auto_coverage": 0.07657945118059988,
+    "auto_error_rate": 0.03333333333333333,
+    "conformal_coverage": 0.8978940650925336,
+    "conformal_mean_set_size": 3.246330567964263,
+    "ece": 0.0379448810183508,
+    "macro_f1": 0.581181865348595,
+    "macro_f1_ci": [
+      0.5423886195603639,
+      0.6172420513700878
+    ],
+    "min_class_recall": {
+      "label": "Human Resources",
+      "recall": 0.34285714285714286
+    },
+    "novel_queue_auroc": 0.5744783144843603,
+    "risk_at_target_coverage": 0.24042553191489358,
+    "target_coverage": 0.6,
+    "test_rows": 1567
+  },
+  "summarization": {
+    "compression_ratio": 0.5153756625832605,
+    "latency": {
+      "p50_ms": 1933.270800000173,
+      "p95_ms": 2644.977414999812,
+      "samples": 10.0
+    },
+    "nli_entailed_rate": 0.5016428571428571,
+    "sample_size": 300,
+    "schema_valid_rate": 1.0,
+    "summaries_in_cache": 300,
+    "ungrounded_quote_rate": 0.1,
+    "unsupported_entity_rate": 0.0
+  },
+  "what_didnt_work": [
+    "- A fine-tuned DistilBERT did not beat the TF-IDF baseline within the CPU",
+    "  budget. Given several epochs on a shortened, subsampled corpus it reached",
+    "  macro-F1 0.245 on queue against 0.578 for TF-IDF, at 268 MB and roughly",
+    "  fifteen times the latency. The lighter model was selected",
+    "  (docs/decisions/0005).",
+    "- Sentence embeddings also underperformed the baseline on both tasks",
+    "  (queue 0.292, priority 0.437), so the middle tier earned nothing either.",
+    "- Character n-grams did not help. On the final comparison word-only scored",
+    "  marginally higher than word plus character n-grams, so the extra feature",
+    "  space bought nothing measurable on this data.",
+    "- The conformal set barely changes the routing decision. Threshold-only and",
+    "  threshold-plus-conformal give nearly identical coverage and error, because",
+    "  the abstention threshold is already strict enough that the singleton",
+    "  condition rarely binds. The guarantee is still worth reporting, but it is",
+    "  not what is holding the error rate down.",
+    "- The 5% auto-route error target and the 60% coverage target cannot hold at",
+    "  once on this dataset. The error target is met comfortably, but only a",
+    "  small share of tickets clear the bar. The cost of reaching the coverage",
+    "  target is measured and stated in the queue table above; the trade-off is",
+    "  reported rather than tuned away.",
+    "- Max calibrated probability barely separates the held-out queue from known",
+    "  ones, so novel-queue AUROC falls well short of 0.75. Confidence alone is a",
+    "  weak novelty signal here.",
+    "- Temperature scaling improved calibration but not enough to clear the 0.03",
+    "  ECE target on test.",
+    "- The first faithfulness measurement scored 0.22 because the summary fields",
+    "  are noun phrases and an entailment model scores propositions. Restating",
+    "  each field as a declarative claim raised it to 0.42. That was a fix to the",
+    "  measurement, not to the summaries."
+  ]
+}

@@ -1,0 +1,362 @@
+[
+  {
+    "sentence": "The issue is data discrepancies found in Investment Analytics Reports after a software update.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Issue with Investment Analytics Reports\nFound data discrepancies after the software update",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The issue is frequent crashes during data analytics operations on MySQL, Plex, and Slack functionalities due to suspected CPU overheating.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "nan\nDear Customer Support, I am reporting a significant problem with our financial firm's system. We are experiencing frequent crashes during data analytics operations, impacting MySQL, Plex, and Slack functionalities. These crashes tend to occur when executing resource-intensive tasks, and we suspe",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is multiple platforms.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Facing System Downtime on Multiple Platforms\nOur system",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is platform services, barcode scanners, RAID controllers.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Immediate Attention Required: Platform Disruption Impacting Device Connectivity\nDear Customer Support Team,\\n\\nI am submitting a report concerning a critical outage of the platform services that is currently hindering device connectivity throughout operations. This disruption has blocked access to t",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The customer requests look into this matter and provide a solution as soon as possible.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Issue with Investment Data Analytics Tool\nCustomer Support, I am reporting an issue with the investment data analytics tool used for creating reports. The tool is providing inconsistent returns on investment forecasts, which may be due to outdated algorithms or data integration issues. After checkin",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is device software, network, and system configurations.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Detected System Disruption Problem\nThe marketing firm encountered disturbances impacting various device software, potentially due to network conflicts or misconfigured settings. These problems continue across different platforms despite preliminary troubleshooting efforts.",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is hospital systems.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Urgent: Security Breach in Hospital Systems, Need Immediate Assistance\nA security breach has been detected in our hospital systems, which may have exposed sensitive medical data. We have already initiated software updates and strengthened our firewall settings, but we are still encountering suspicio",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is hospital systems applications (Speicherkartenleser, WhatsApp Desktop, network switches).",
+    "nli_label": "entailed",
+    "ticket_excerpt": "nan\nMultiple hospital systems applications, including Speicherkartenleser, WhatsApp Desktop, and network switches, experienced inaccessibility and malfunctions. This may have led to a security breach and network failure. Initial troubleshooting involved rebooting systems, performing network diagnost",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates recent changes in social media algorithms.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Need to Investigate Decline in Marketing Campaign Engagement\nThe marketing campaign has seen a sudden drop in engagement metrics, which might be due to recent changes in social media algorithms. Despite attempts to adjust the content strategy and boost posts, the results have not improved. An invest",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The issue is system performance issues impacting multiple products due to network congestion caused by intensive data analytics operations.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "nan\nThe company encountered system performance issues impacting multiple products due to network congestion caused by intensive data analytics operations. Initial troubleshooting steps included rebooting systems and applying software updates to affected devices. Despite these efforts, the performanc",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The issue is requesting an update to improve project management software's user interface.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Request for Updating Project Management Software\nCustomer Support, I am reaching out to request an update to our project management software. The current interface is cluttered and difficult to navigate, which is impacting our team's productivity. I would like to request changes to enhance the user ",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is multiple products, API connections.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Problem with Integration Failures\nExperienced issues with integrations across multiple products. Possible cause could be recent updates or changes in API connections. Attempted restarting services and re-authorizing integrations, but to no avail. The issue continues and assistance is needed to resol",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates campaigns have not produced desired outcomes.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Marketing Campaign Fails to Meet Expectations\nThe digital marketing initiatives for the product brand have not met anticipated growth targets, potentially due to misaligned target demographics. Efforts such as content revisions and increased advertising expenditure have been implemented, yet the ret",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is analytics software, financial firm's systems.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Concern Regarding System Performance Today\nDear Customer Support, our financial firm has experienced system crashes and slow performance when using the analytics software. We suspect these issues may arise from compatibility problems with recent software updates or drivers. We have already attempted",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The customer requests implement robust security protocols (encryption and access controls), conduct regular security audits, and train staff to comply with healthcare regulations.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Improve Data Security Protocols\nCould you please enhance the security measures for our medical data systems to comply with healthcare regulations and protect sensitive patient information? It would be greatly appreciated if you could implement robust security protocols, such as encryption and access",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The customer requests provide guidance on implementing appropriate security measures for sensitive patient information in the Elasticsearch cluster.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Guidance on Securing Medical Data Systems\nSeeking advice on securing medical data in an Elasticsearch environment at the hospital. Could you provide guidance on implementing appropriate security measures to protect sensitive patient information? The measures should include data encryption, access co",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The customer requests share effective methods to market Bitdefender Antivirus Plus 2021 via social media advertising, email campaigns, and online promotions.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Assistance Required for Bitdefender Antivirus Plus Promotional Campaign\nSeeking comprehensive digital marketing insights to promote Bitdefender Antivirus Plus 2021. Can you share effective methods to market this product? I would value advice on social media advertising, email campaigns, and online p",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The issue is platform services disruption impacting device connectivity.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Immediate Attention Required: Platform Disruption Impacting Device Connectivity\nDear Customer Support Team,\\n\\nI am submitting a report concerning a critical outage of the platform services that is currently hindering device connectivity throughout operations. This disruption has blocked access to t",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The issue is problems accessing data on several devices, disrupting hospital functions.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Problems Accessing Data on Devices\nFaced difficulties accessing data on several devices, disrupting hospital functions. The problem possibly stems from recent software updates or network configuration mistakes. Attempts to fix the issue by restarting devices and resetting network settings have been ",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is activeCampaign and Squarespace integrations.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Support Needed for ActiveCampaign and Squarespace Integration\nCustomer Support, I am seeking guidance on integrating ActiveCampaign with Squarespace to optimize marketing automation workflows. I am attempting to set up the integration but am experiencing difficulties in getting it to function proper",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The issue is requesting comprehensive documentation for integrating ESET NOD32 Antivirus 14 with a SaaS project management platform.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Support for ESET NOD32 Integration\nIn need of comprehensive documentation for integrating ESET NOD32 Antivirus 14 with the SaaS project management platform. Requesting detailed steps for the integration process, required configuration settings, and guidance on resolving typical issues. This integrat",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is smart-Sicherheitskamera application on iOS 15.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Report on Application Glitches\nFacing unanticipated application crashes with Smart-Sicherheitskamera on iOS 15. Despite clearing cache and reinstalling the app, the issue continues.",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The issue is access problems with hospital systems (KVM-Switch and Oracle Database 19c) due to sporadic network delays or hardware conflicts.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Access Problems with Hospital Systems\nEncountering sporadic access difficulties with hospital systems, specifically related to the KVM-Switch and Oracle Database 19c. Potential causes might include network delays or hardware conflicts. Attempts to resolve by rebooting devices, updating drivers, and ",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The issue is billing discrepancies affecting investment optimization efforts due to errors in billing integration or subscription renewal processes.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Issues with Billing for Various Products\nA financial company is encountering discrepancies in billing for several software and hardware products, which is affecting their investment optimization efforts. The discrepancies might be due to errors in the billing integration or subscription renewal proc",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is smart-Home devices, software update.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Device Connectivity Problems\nFacing connectivity issues with Smart-Home devices. A recent software update might be the cause. Restarting and checking network settings temporarily resolved the issue.",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The issue is request for enhanced security measures for medical data systems.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Improve Data Security Protocols\nCould you please enhance the security measures for our medical data systems to comply with healthcare regulations and protect sensitive patient information? It would be greatly appreciated if you could implement robust security protocols, such as encryption and access",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The issue is investment forecast discrepancies identified.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Investment Forecast Discrepancies Identified\nNoted discrepancies in investment forecasts have been discovered.",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The issue is requesting information on security features for medical data in MongoDB 4.4.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Enhancing Security for Medical Data in MongoDB\nHello, we are reaching out regarding the security measures for medical data in MongoDB 4.4, especially in relation to its integration with Apache Hadoop. Given the sensitivity of medical data, it is crucial to have strong security protocols to prevent u",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The customer requests provide more information on how to proceed with the implementation.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Implement IFTTT and JIRA Automation Synergy\nCustomer support, requesting integration of project management tools IFTTT and JIRA to enhance automation and collaboration capabilities. This integration would significantly boost team productivity and streamline workflows. IFTTT can automate repetitive t",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The customer requests request updates on existing procedures of the SaaS platform.",
+    "nli_label": "entailed",
+    "ticket_excerpt": "Request for Updates on SaaS Platform Process Enhancements\nDear Customer Support Team,\\n\\nI am reaching out to request updates on the existing procedures of the SaaS platform, with a particular emphasis on strengthening collaboration among Agile teams such as Product, Backend, Frontend, DevOps, QA, a",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates minimize operational disruptions.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Urgent: Major Software Malfunction Noted\nDear Support Team, A severe software malfunction has been reported, impacting the efficiency of data analysis, which may be linked to a database connectivity problem. Efforts to resolve the issue have included restarting affected services and reviewing system",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is software system, specifically related to database connectivity issues.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Urgent: Major Software Malfunction Noted\nDear Support Team, A severe software malfunction has been reported, impacting the efficiency of data analysis, which may be linked to a database connectivity problem. Efforts to resolve the issue have included restarting affected services and reviewing system",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates disrupting hospital functions.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Problems Accessing Data on Devices\nFaced difficulties accessing data on several devices, disrupting hospital functions. The problem possibly stems from recent software updates or network configuration mistakes. Attempts to fix the issue by restarting devices and resetting network settings have been ",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates this may be due to outdated security protocols.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Support Request for Unauthorized Access\nThere have been experienced unauthorized access attempts to the medical data systems. This may be due to outdated security protocols. After updating passwords and running virus scans, the issues still persist. Assistance is needed to resolve this issue.",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The customer requests update data analytics tools.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Update Investment Data\nRequest to update data analytics tools for monitoring the performance of tech products",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates input errors.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Concerns about Data Analytics Tool\nThe data analytics tool has been generating inconsistent results. It seems recent software updates might be the cause of input errors. Efforts to revert to previous versions and validate input data have been unsuccessful.",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates potentially due to an overload on the MySQL server.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Data Disruption\nThe company's data analytics system experienced a crash, potentially due to an overload on the MySQL server. We attempted to restart the server and reviewed the logs, but the issue persists. Our team is actively investigating the root cause and working on a resolution. We apologize f",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is hospital's systems, specifically medical records system.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Data Breach in Medical Records System Noted\nA data breach has been identified in the hospital's systems, affecting secure medical data. Immediate actions involved disabling the impacted systems.",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is medical Records System.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Problem Accessing Medical Records\nCustomer Support is documenting a recurring problem with accessing medical records. Despite troubleshooting efforts, the issue continues. Errors happen intermittently, and it is suspected that conflicts with the network adapter might be the underlying cause. To addr",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates recent software update.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "nan\nHello Customer Support, I am facing an issue with the analytics dashboard for my report on the investment analytics dashboard. The real-time investment data is not displaying as expected. I believe this issue might have been caused by a recent software update. I have already tried restarting the",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The customer requests address this matter.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Problem with Data Mismatch\nAn unexpected data mismatch was detected in the investment analytics reports. This may be due to recent software updates affecting data integrity. After validating data sources and checking the updates, the issue still persists. Please help us address this matter.",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates following recent software updates and integrations.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Problem with Data Sync in Analytics System\nEncountered data synchronization failures in the analytics system following recent software updates and integrations.",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates increased user load.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Problem Faced\nNoted intermittent performance lag during peak usage times on the SaaS platform. This may have resulted from an increase in user load and inefficient backend queries. So far, we have optimized database queries and scaled server instances, but without significant improvement. Our team i",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is enhancing Digital Brand Expansion.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Support for Enhancing Digital Brand Expansion\nSeeking to understand digital strategies for brand growth. Would be grateful if you could provide information and services that could help improve our online presence and increase brand awareness. I would greatly appreciate your guidance and look forward",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates recent unauthorized access.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Request for Assistance Regarding Data Breach\nDear Customer Support,\\n\\nI am reporting a critical issue within a healthcare provider's system. Recently, there was an unauthorized access to sensitive medical information, which I suspect is due to outdated security patches. Despite updating to the late",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates significant delays in their ability to track and analyze marketing campaign performance.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "nan\nThe marketing agency encountered delays in campaign analytics reporting, potentially due to recent platform updates. They attempted basic troubleshooting, such as clearing the cache, but without success. This issue caused significant delays in their ability to track and analyze marketing campaig",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates server overload or a software bug.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Critical Outage in SaaS Platform\nThe project management component of the SaaS platform has encountered a significant outage, impacting several interconnected products. The likely cause is a server overload or a software bug. Attempts to resolve included restarting services and scaling the infrastruc",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The customer requests fix the website to prevent future crashes and ensure the campaign can proceed as planned.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Reported Problem with Website Crash\nThe website crash has severely impacted the campaign launch.",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates stability problems.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Sluggish Performance in Project Data Loading\nUsers have reported delays in loading project data on the dashboard. This issue might be related to recent server updates causing stability problems. Despite clearing the cache and restarting services, the issue remains unresolved and requires attention.",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates inefficient queries.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Significant Performance Degradation Noted During Optimum User Activity Period\nObserved critical performance degradation during peak user activity periods. This could be due to increased user load and inefficient queries. Efforts to optimize database queries have resolved the issue.",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The customer requests update security protocols to prevent similar incidents in the future.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Concern About Medical Data Access\nAn unexpected access request for medical data has been logged in the hospital system. This could have occurred due to outdated security protocols. After reviewing recent activity logs, it was confirmed that suspicious software was installed. Please address this matt",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is analytics tools used for investment forecasts.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Request for Assistance\nDear Customer Support, I am reaching out to seek help with an issue related to investment forecasts. Despite using analytics tools, the forecasts remain inaccurate. We suspect that poor data quality might be the underlying cause. Our team attempted basic data cleaning and made",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates might be due to outdated security measures.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Unverified Access Attempts on Sensitive Medical Data\nOur system has faced unauthorized access attempts on sensitive medical data, which might be due to outdated security measures. We have already reviewed access logs and updated passwords, but the issues continue. We kindly request your assistance i",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates impacting server performance.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Performance Issue with Dashboard\nDear Customer Support, Recently, users have encountered substantial lag when accessing the project management dashboard. This issue might be due to increased user load impacting server performance. Despite attempts to optimize server resources and clear cache, the pr",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is investment optimization analytics system.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Investigation Needed for Anomalies in Investment Optimization Analytics\nWe have identified anomalies in the investment optimization analytics. Potential reasons could be data inconsistencies or algorithmic errors. Efforts to recalibrate the algorithms and validate data sources have been unsuccessful",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is smart-Tracker feature, multiple products.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Reported Problem with Tracker\nEncountered a sudden failure in the Smart-Tracker feature, which has affected several products. The exact cause of the issue is not clear but could be related to recent software updates or database inconsistencies. The team has already tried resolving it by restarting s",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The customer requests provide detailed documentation on available endpoints, request formats, authentication methods; provide code examples and SDKs for popular programming languages.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Project for API Integration\nLooking into API integration services and project management tools. Would appreciate detailed documentation to integrate the API with project management tools. Interested in learning about available endpoints, request formats, and authentication methods. Also, would be ve",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The issue is digital tools malfunction disrupting workflows.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "nan\nCustomer Support, composing a report about an issue with the marketing agency's digital tools. Recently, the tools experienced a malfunction, disrupting normal workflows. It is suspected that conflicting software updates may have caused the problem. The team attempted to reboot the system and pe",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The ticket indicates we apologize for any inconvenience caused and appreciate your patience and understanding during this time.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Performance Issue with SaaS Platform\nThe SaaS platform encountered unexpected and substantial downtime and performance problems. The potential cause might be server overload or a configuration mistake. Actions taken include restarting servers, clearing caches, and monitoring logs; however, the issue",
+    "human_verdict": ""
+  },
+  {
+    "sentence": "The affected area is investment Analytics Service, Billing Platform.",
+    "nli_label": "not_entailed",
+    "ticket_excerpt": "Incorrect Billing for System Usage\nThe billing platform marked the charges for the Investment Analytics Service as incorrect. There might be a data synchronization problem leading to these inconsistencies.",
+    "human_verdict": ""
+  }
+]
