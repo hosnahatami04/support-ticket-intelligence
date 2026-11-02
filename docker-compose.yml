@@ -1,0 +1,67 @@
+services:
+  ollama:
+    image: ollama/ollama:0.5.4
+    volumes:
+      - ollama-models:/root/.ollama
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # Pulls the pinned summarizer weights once, then exits; the api waits for it.
+  ollama-pull:
+    image: ollama/ollama:0.5.4
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: ["ollama", "pull", "qwen2.5:3b-instruct"]
+    restart: "no"
+
+  api:
+    build:
+      context: .
+      target: runtime
+    ports:
+      - "8000:8000"
+    environment:
+      TICKETINTEL_PATHS__ARTIFACTS: /app/artifacts
+    volumes:
+      - ./artifacts:/app/artifacts:ro
+      - ./reports:/app/reports:ro
+    depends_on:
+      ollama:
+        condition: service_healthy
+
+  ui:
+    build:
+      context: .
+      target: runtime
+    command:
+      - streamlit
+      - run
+      - src/ticketintel/ui/app.py
+      - --server.port=8501
+      - --server.address=0.0.0.0
+      - --server.headless=true
+    environment:
+      TICKETINTEL_API_URL: http://api:8000
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./reports:/app/reports:ro
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8501/_stcore/health', timeout=4).status==200 else 1)\""]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  ollama-models:
