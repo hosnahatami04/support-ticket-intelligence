@@ -20,6 +20,9 @@ from ticketintel.reliability.policy import AUTO_ROUTE, decide
 
 logger = get_logger(__name__)
 
+# The coverage KPI the spec sets for automatic routing.
+TARGET_COVERAGE = 0.60
+
 
 @dataclass(frozen=True)
 class FrozenPolicy:
@@ -69,6 +72,14 @@ def label_index(classes: np.ndarray, labels: list[str]) -> np.ndarray:
     return np.array([lookup[label] for label in labels])
 
 
+def _risk_at_coverage(confidence: np.ndarray, correct: np.ndarray, target_coverage: float) -> float:
+    # What the error rate would be if the policy were loosened until it routed
+    # `target_coverage` of tickets. Reported so the trade-off against the
+    # coverage KPI is a measured number rather than an assertion.
+    coverage, risk = selective.risk_coverage_curve(confidence, correct)
+    return float(risk[int(np.argmin(np.abs(coverage - target_coverage)))])
+
+
 def evaluate_queue(settings: Settings, policy: FrozenPolicy) -> dict[str, object]:
     # The single pass over test, with the model and thresholds frozen beforehand.
     train = load_split(settings, "train")
@@ -108,6 +119,8 @@ def evaluate_queue(settings: Settings, policy: FrozenPolicy) -> dict[str, object
         "auto_coverage": auto_count / len(test),
         "auto_error_rate": (auto_errors / auto_count) if auto_count else 0.0,
         "aurc": selective.area_under_risk_coverage(confidence, correct),
+        "risk_at_target_coverage": _risk_at_coverage(confidence, correct, TARGET_COVERAGE),
+        "target_coverage": TARGET_COVERAGE,
         "conformal_coverage": conformal.empirical_coverage(proba, y_idx, policy.conformal_qhat),
         "conformal_mean_set_size": conformal.average_set_size(proba, policy.conformal_qhat),
         "novel_queue_auroc": novelty.novel_queue_auroc(confidence, novel_conf),

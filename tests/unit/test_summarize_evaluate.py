@@ -98,3 +98,19 @@ def test_report_excludes_private_keys(tmp_path: Path) -> None:
     path = ev.write_report({"schema_valid_rate": 1.0, "_review_rows": [1, 2]}, settings)
     written = json.loads(path.read_text(encoding="utf-8"))
     assert written == {"schema_valid_rate": 1.0}
+
+
+def test_failures_are_recorded_with_their_reason(tmp_path: Path) -> None:
+    # Regression: the generator counted failures but discarded why, which made a
+    # persistent failure impossible to diagnose from the report alone.
+    settings = _settings(tmp_path)
+    failures = [
+        {"reason": "summary failed after 2 attempts: bad json", "ticket_excerpt": "a ticket"}
+    ]
+
+    path = ev.write_failures(failures, settings)
+    written = json.loads(path.read_text(encoding="utf-8"))
+
+    assert written == failures
+    assert "bad json" in written[0]["reason"]
+    assert path.name == "summarization_failures.json"

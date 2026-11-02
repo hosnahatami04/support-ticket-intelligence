@@ -18,9 +18,10 @@ the thresholds frozen beforehand: tickets routed automatically are wrong
 **3.3%** of the time, but only **7.7%** of tickets clear that bar; the conformal
 prediction sets cover the true queue **89.8%** of the time against a 90% target;
 and **0%** of generated summaries introduce a number, address or identifier that
-is absent from the ticket. The coverage figure misses its 60% target and is
-reported as measured — see [reports/results.md](reports/results.md) for the full
-picture, including the error-versus-coverage trade-off and what did not work.
+is absent from the ticket. That 7.7% automatic coverage badly misses its 60%
+target, and is reported as measured rather than tuned away — see
+[reports/results.md](reports/results.md) for the full picture, including the
+error-versus-coverage trade-off and what did not work.
 
 This is a personal project built on public data, with no connection to any
 employer.
@@ -151,8 +152,8 @@ of primary metric to why the lighter model was selected over the transformer.
   dataset is licensed `cc-by-nc-4.0`, so it is for non-commercial use.
 - **English only.** The source is bilingual; the German half is filtered out.
 - **Automatic coverage is low.** Holding auto-route error at 3.3% leaves only
-  7.7% of tickets routed automatically. Reaching the 60% coverage target would
-  cost roughly 27% error on this data. The trade-off is in
+  7.7% of tickets routed automatically. The measured cost of loosening the
+  policy to the 60% coverage target is reported in the queue table of
   [reports/results.md](reports/results.md).
 - **Calibration misses its target.** ECE is 0.0379 after temperature scaling
   against a 0.03 target.

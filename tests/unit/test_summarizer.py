@@ -67,7 +67,23 @@ def test_cache_only_path_reads_stored_summary(tmp_path: Path) -> None:
     client = _CountingClient([{"issue": "stored"}])
     summarize("t", client, TEMPLATE, cache, "digest")
 
-    loaded = summarize_from_cache_only("t", cache, "m", "digest", 0.0)
+    # The prompt text is part of the key, so the reader must pass the same one.
+    loaded = summarize_from_cache_only("t", cache, "m", "digest", 0.0, prompt_text=TEMPLATE)
     assert isinstance(loaded, TicketSummary)
     assert loaded.issue == "stored"
     assert client.calls == 1  # evaluation path did not call the model
+
+
+def test_editing_the_prompt_invalidates_the_cache(tmp_path: Path) -> None:
+    # Regression: the key used only the version label, so editing a prompt file
+    # in place kept serving the old outputs and an evaluation would report
+    # results the current prompt never produced.
+    cache = SummaryCache(tmp_path)
+    client = _CountingClient([{"issue": "first"}, {"issue": "second"}])
+
+    first = summarize("t", client, "prompt A: {ticket}", cache, "digest")
+    second = summarize("t", client, "prompt B: {ticket}", cache, "digest")
+
+    assert first.issue == "first"
+    assert second.issue == "second"
+    assert client.calls == 2  # the edited prompt was not served from cache

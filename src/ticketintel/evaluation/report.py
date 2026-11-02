@@ -140,6 +140,9 @@ def _queue_rows(queue: dict[str, Any]) -> list[str]:
         f"| conformal coverage | {_fmt(queue['conformal_coverage'])} | 0.90 +/- 0.02 |",
         f"| mean conformal set size | {_fmt(queue['conformal_mean_set_size'])} | report |",
         f"| novel-queue AUROC | {_fmt(queue['novel_queue_auroc'])} | >= 0.75 |",
+        "| error if coverage were raised to "
+        f"{_fmt(queue['target_coverage'])} | {_fmt(queue['risk_at_target_coverage'])} | "
+        "the cost of the coverage target |",
     ]
 
 

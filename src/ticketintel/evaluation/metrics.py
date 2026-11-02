@@ -11,12 +11,18 @@ from ticketintel.data.schema import PRIORITY_ORDER
 Labels: TypeAlias = Sequence[str] | np.ndarray
 
 
-def macro_f1(y_true: Labels, y_pred: Labels) -> float:
-    return float(np.mean(list(per_class_f1(y_true, y_pred).values())))
+def macro_f1(y_true: Labels, y_pred: Labels, labels: Sequence[str] | None = None) -> float:
+    return float(np.mean(list(per_class_f1(y_true, y_pred, labels).values())))
 
 
-def per_class_f1(y_true: Labels, y_pred: Labels) -> dict[str, float]:
-    labels = sorted(set(y_true) | set(y_pred))
+def per_class_f1(
+    y_true: Labels, y_pred: Labels, labels: Sequence[str] | None = None
+) -> dict[str, float]:
+    # `labels` pins the averaging set. The bootstrap passes the labels of the
+    # full sample so a resample that happens to omit a rare class still divides
+    # by the real class count, instead of silently averaging over fewer, easier
+    # classes and biasing the interval upward.
+    labels = list(labels) if labels is not None else sorted(set(y_true) | set(y_pred))
     yt = np.asarray(y_true)
     yp = np.asarray(y_pred)
     scores: dict[str, float] = {}
@@ -79,11 +85,29 @@ def bootstrap_ci(
     yt = np.asarray(y_true)
     yp = np.asarray(y_pred)
     n = len(yt)
-    point = metric(yt, yp)
+
+    # Fix the label set from the full sample so the metric is the same function
+    # on every draw; otherwise a resample missing a rare class scores a
+    # different, easier metric.
+    labels = sorted(set(yt.tolist()) | set(yp.tolist()))
+    scored = _with_fixed_labels(metric, labels)
+
+    point = scored(yt, yp)
     draws = np.empty(n_samples)
     for i in range(n_samples):
         idx = rng.integers(0, n, size=n)
-        draws[i] = metric(yt[idx], yp[idx])
+        draws[i] = scored(yt[idx], yp[idx])
     lower = float(np.percentile(draws, 100 * alpha / 2))
     upper = float(np.percentile(draws, 100 * (1 - alpha / 2)))
     return point, lower, upper
+
+
+def _with_fixed_labels(
+    metric: Callable[[Labels, Labels], float], labels: Sequence[str]
+) -> Callable[[Labels, Labels], float]:
+    # Metrics that average per class accept an explicit label set; the others
+    # (ordinal MAE, for instance) are already independent of which classes a
+    # resample happens to contain.
+    if metric is macro_f1:
+        return lambda a, b: macro_f1(a, b, labels)
+    return metric

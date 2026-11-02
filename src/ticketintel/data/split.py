@@ -82,6 +82,8 @@ def split(frame: pd.DataFrame, settings: Settings) -> pd.DataFrame:
 
     out[schema.SPLIT] = out[schema.GROUP_ID].map(group_split)
 
+    _warn_on_empty_cells(out)
+
     split_counts = out[schema.SPLIT].value_counts()
     logger.info(
         "assigned splits",
@@ -91,3 +93,20 @@ def split(frame: pd.DataFrame, settings: Settings) -> pd.DataFrame:
         },
     )
     return out
+
+
+def _warn_on_empty_cells(frame: pd.DataFrame) -> None:
+    # A queue with very few duplicate groups can be packed entirely into train,
+    # leaving it unrepresented in calibration or test. That silently weakens the
+    # temperature fit and the conformal guarantee, so it is surfaced rather than
+    # discovered later in a metric that looks fine.
+    needed = ("train", "calibration", "test")
+    present = frame.loc[frame[schema.SPLIT] != NOVEL]
+    missing: list[str] = []
+    for queue, rows in present.groupby(schema.QUEUE, sort=True):
+        covered = set(rows[schema.SPLIT])
+        for split_name in needed:
+            if split_name not in covered:
+                missing.append(f"{queue}/{split_name}")
+    if missing:
+        logger.warning("queues missing from a split", extra={"missing": missing})

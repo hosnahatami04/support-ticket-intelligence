@@ -6,7 +6,7 @@ host: http://localhost:11434
 temperature: 0.0
 timeout_s: 180.0
 max_retries: 2
-prompt_version: summary_v1
+prompt_version: summary_v2
 # Fixed evaluation sample from the test split (section 4.2).
 eval_sample_size: 300
 eval_seed: 42

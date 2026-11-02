@@ -20,9 +20,13 @@ DEFAULT_C_GRID = (0.1, 0.3, 1.0, 3.0, 10.0, 30.0, 100.0)
 
 
 def _build_pipeline(c: float) -> Pipeline:
-    # Word and character n-grams together: words carry topic signal, character
-    # grams absorb typos and product tokens. TF-IDF lowercases internally, which
-    # is the only place the text is lowercased.
+    # Word and character n-grams together. The final ablation measured the char
+    # branch as very slightly negative on this data (word-only 0.5833 against
+    # 0.5780 with char, reports/results.md), well inside the bootstrap interval.
+    # It is kept because character grams absorb typos and product tokens, which
+    # real tickets carry more of than this synthetic corpus; dropping it on a
+    # 0.005 difference would be fitting the decision to noise. TF-IDF lowercases
+    # internally, which is the only place the text is lowercased.
     features = FeatureUnion(
         [
             ("word", TfidfVectorizer(analyzer="word", ngram_range=(1, 2), min_df=2)),

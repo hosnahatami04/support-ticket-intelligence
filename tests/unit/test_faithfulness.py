@@ -66,3 +66,31 @@ def test_entailed_fraction_with_no_sentences() -> None:
     fraction, flags = entailed_fraction(_StubScorer([]), SOURCE, [])
     assert fraction == 1.0
     assert flags == []
+
+
+def test_ungrounded_quote_is_flagged() -> None:
+    # The entity check cannot see this: no number, address or code is invented,
+    # yet the phrase appears nowhere in the ticket.
+    from ticketintel.summarize.faithfulness import ungrounded_quotes
+
+    flagged = ungrounded_quotes(["system has been down since Monday"], SOURCE)
+    assert flagged == ["system has been down since Monday"]
+
+
+def test_quote_taken_from_the_ticket_is_not_flagged() -> None:
+    from ticketintel.summarize.faithfulness import ungrounded_quotes
+
+    assert ungrounded_quotes(["Order 48219 has not arrived"], SOURCE) == []
+
+
+def test_light_paraphrase_is_tolerated() -> None:
+    # Word overlap, not exact matching, so a reworded quote still passes.
+    from ticketintel.summarize.faithfulness import ungrounded_quotes
+
+    assert ungrounded_quotes(["paid 1,200 euros on the invoice"], SOURCE) == []
+
+
+def test_empty_quotes_are_ignored() -> None:
+    from ticketintel.summarize.faithfulness import ungrounded_quotes
+
+    assert ungrounded_quotes(["", "   "], SOURCE) == []

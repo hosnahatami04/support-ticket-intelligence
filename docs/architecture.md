@@ -79,8 +79,9 @@ with the model and thresholds already frozen.
 
 Three tiers were built and compared: TF-IDF with word and character n-grams,
 sentence embeddings, and a fine-tuned DistilBERT. On validation the TF-IDF
-baseline won both tasks by a wide margin, while being roughly forty times
-smaller than the transformer and an order of magnitude faster per ticket. The
+baseline won both tasks by a wide margin, while being far smaller than the
+transformer (6.6 MB for queue and 3.3 MB for priority against 268 MB) and an
+order of magnitude faster per ticket. The
 selection rule, recorded in `docs/decisions/0005-final-model-selection.md`,
 keeps the lighter tier unless a heavier one beats it by at least one macro-F1
 point; nothing did. The transformer code remains in the repository as the

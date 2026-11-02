@@ -93,6 +93,8 @@ def _minimal_results() -> dict[str, object]:
             "conformal_coverage": 0.8979,
             "conformal_mean_set_size": 3.246,
             "novel_queue_auroc": 0.5745,
+            "risk_at_target_coverage": 0.2404,
+            "target_coverage": 0.60,
         },
         "priority": {
             "macro_f1": 0.6169,

@@ -65,15 +65,32 @@ def generate_summaries(settings: Settings, cfg: SummarizerSettings) -> dict[str,
     cache = SummaryCache(settings.paths.artifacts / "summary_cache")
 
     tickets = sample_tickets(settings, cfg)
-    ok, failed = 0, 0
+    ok = 0
+    failures: list[dict[str, str]] = []
     for text in tickets[schema.TEXT]:
         try:
             summarize(text, client, template, cache, digest, cfg.prompt_version)
             ok += 1
-        except SummarizationError:
-            failed += 1
-    logger.info("generated summaries", extra={"ok": ok, "failed": failed})
-    return {"ok": ok, "failed": failed}
+        except SummarizationError as exc:
+            # Keep why it failed. Counting failures without their reason is what
+            # makes a persistent one impossible to diagnose from the report.
+            failures.append({"reason": str(exc), "ticket_excerpt": text[:200]})
+            logger.warning(
+                "summary failed", extra={"reason": str(exc), "ticket_excerpt": text[:200]}
+            )
+
+    if failures:
+        write_failures(failures, settings)
+    logger.info("generated summaries", extra={"ok": ok, "failed": len(failures)})
+    return {"ok": ok, "failed": len(failures)}
+
+
+def write_failures(failures: list[dict[str, str]], settings: Settings) -> Path:
+    out_dir = settings.paths.reports / "interim"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    path = out_dir / "summarization_failures.json"
+    path.write_text(json.dumps(failures, indent=2), encoding="utf-8")
+    return path
 
 
 def evaluate(
@@ -84,18 +101,20 @@ def evaluate(
     cache = SummaryCache(settings.paths.artifacts / "summary_cache")
     client = OllamaClient(OllamaConfig(model=cfg.model, host=cfg.host))
     digest = client.model_digest()
+    template = load_prompt(Path("prompts"), cfg.prompt_version)
     tickets = sample_tickets(settings, cfg)
     scorer = scorer or CrossEncoderScorer()
 
     valid = 0
     unsupported_entity_count = 0
+    ungrounded_quote_count = 0
     compressions: list[float] = []
     entail_fractions: list[float] = []
     review_rows: list[dict[str, object]] = []
 
     for text in tickets[schema.TEXT]:
         summary = summarize_from_cache_only(
-            text, cache, cfg.model, digest, cfg.temperature, cfg.prompt_version
+            text, cache, cfg.model, digest, cfg.temperature, cfg.prompt_version, template
         )
         if summary is None:
             continue
@@ -104,6 +123,9 @@ def evaluate(
         fields = summary.text_fields()
         if not faithfulness.check_entities(fields, text).is_faithful:
             unsupported_entity_count += 1
+        # urgency_signals are meant to be the ticket's own wording.
+        if faithfulness.ungrounded_quotes(summary.urgency_signals, text):
+            ungrounded_quote_count += 1
 
         summary_text = " ".join(fields)
         compressions.append(len(summary_text.split()) / max(len(text.split()), 1))
@@ -127,6 +149,7 @@ def evaluate(
         "summaries_in_cache": valid,
         "schema_valid_rate": valid / total if total else 0.0,
         "unsupported_entity_rate": unsupported_entity_count / valid if valid else 0.0,
+        "ungrounded_quote_rate": ungrounded_quote_count / valid if valid else 0.0,
         "nli_entailed_rate": float(np.mean(entail_fractions)) if entail_fractions else 0.0,
         "compression_ratio": float(np.mean(compressions)) if compressions else 0.0,
         "_review_rows": review_rows,

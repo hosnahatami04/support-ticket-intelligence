@@ -102,3 +102,20 @@ def test_cross_queue_group_stays_in_one_split() -> None:
     assert (out.loc[out[schema.GROUP_ID] == 2, schema.SPLIT] == NOVEL).all()
     # No novel-queue ticket ends up anywhere but the holdout.
     assert (out.loc[out[schema.QUEUE] == "Outages", schema.SPLIT] == NOVEL).all()
+
+
+def test_queue_with_too_few_groups_is_reported(caplog: pytest.LogCaptureFixture) -> None:
+    # A queue small enough to be packed entirely into train leaves calibration
+    # and test unrepresented; that must be surfaced, not swallowed.
+    import logging
+
+    frame = pd.DataFrame(
+        [
+            {schema.TEXT: "a", schema.QUEUE: "Tiny", schema.PRIORITY: "low", schema.GROUP_ID: 1},
+            {schema.TEXT: "b", schema.QUEUE: "Tiny", schema.PRIORITY: "low", schema.GROUP_ID: 2},
+        ]
+    )
+    with caplog.at_level(logging.WARNING, logger="ticketintel.data.split"):
+        split(frame, _settings())
+
+    assert any("missing from a split" in r.getMessage() for r in caplog.records)

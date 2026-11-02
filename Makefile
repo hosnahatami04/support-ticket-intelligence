@@ -11,7 +11,7 @@ data:
 	uv run ticketintel data
 
 lint:
-	uv run ruff check src tests
+	uv run ruff check src tests benchmarks
 
 format:
 	uv run ruff format src tests
@@ -42,4 +42,5 @@ summarize-eval:
 test-ci:
 	uv run --isolated --extra dev mypy
 	uv run --isolated --extra dev ruff check src tests benchmarks
+	uv run --isolated --extra dev ruff format --check src tests benchmarks
 	uv run --isolated --extra dev pytest -m "not ml and not data"

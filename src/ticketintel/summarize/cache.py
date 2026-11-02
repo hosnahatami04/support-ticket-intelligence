@@ -30,11 +30,17 @@ class SummaryCache:
         model_tag: str,
         model_digest: str,
         params: Mapping[str, object],
+        prompt_text: str | None = None,
     ) -> str:
+        # The prompt's CONTENT is part of the key, not just its version label.
+        # Editing a prompt file in place would otherwise keep serving the old
+        # outputs from cache, so an evaluation would silently report results
+        # the current prompt never produced.
         material = json.dumps(
             {
                 "ticket": ticket_text,
                 "prompt_version": prompt_version,
+                "prompt_sha256": hashlib.sha256((prompt_text or "").encode()).hexdigest(),
                 "model_tag": model_tag,
                 "model_digest": model_digest,
                 "params": params,

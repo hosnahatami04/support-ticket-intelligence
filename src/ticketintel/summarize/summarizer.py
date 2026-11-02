@@ -11,7 +11,7 @@ from ticketintel.summarize.schema import TicketSummary
 
 logger = get_logger(__name__)
 
-PROMPT_VERSION = "summary_v1"
+PROMPT_VERSION = "summary_v2"
 
 
 class SummarizationError(RuntimeError):
@@ -35,7 +35,9 @@ def summarize(
     prompt_version: str = PROMPT_VERSION,
 ) -> TicketSummary:
     params = {"temperature": client.config.temperature}
-    key = cache.key(ticket_text, prompt_version, client.config.model, model_digest, params)
+    key = cache.key(
+        ticket_text, prompt_version, client.config.model, model_digest, params, template
+    )
 
     cached = cache.get(key)
     if cached is not None:
@@ -66,11 +68,17 @@ def summarize_from_cache_only(
     model_digest: str,
     temperature: float,
     prompt_version: str = PROMPT_VERSION,
+    prompt_text: str | None = None,
 ) -> TicketSummary | None:
     # Evaluation path: never calls the model, so KPI numbers are reproducible
     # from the cache alone (section 2.4).
     key = cache.key(
-        ticket_text, prompt_version, model_tag, model_digest, {"temperature": temperature}
+        ticket_text,
+        prompt_version,
+        model_tag,
+        model_digest,
+        {"temperature": temperature},
+        prompt_text,
     )
     cached = cache.get(key)
     return TicketSummary.model_validate(cached) if cached is not None else None

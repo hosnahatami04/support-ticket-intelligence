@@ -65,3 +65,24 @@ def split_sentences(text: str) -> list[str]:
     # splitter would add a dependency for no measurable gain.
     parts = re.split(r"(?<=[.!?])\s+", text.strip())
     return [p.strip() for p in parts if p.strip()]
+
+
+def ungrounded_quotes(quoted: list[str], source: str, min_overlap: float = 0.6) -> list[str]:
+    """Quoted phrases whose wording is largely absent from the source.
+
+    The entity check only catches numbers, addresses and identifiers, so a
+    summary can invent a whole phrase and still score as faithful. Fields that
+    are meant to be quotations from the ticket - urgency signals above all -
+    are checked here by word overlap, which tolerates light paraphrase but
+    catches a phrase the ticket never contained.
+    """
+    source_words = set(_normalise(source).split())
+    flagged: list[str] = []
+    for phrase in quoted:
+        words = [w for w in _normalise(phrase).split() if w]
+        if not words:
+            continue
+        overlap = sum(1 for w in words if w in source_words) / len(words)
+        if overlap < min_overlap:
+            flagged.append(phrase)
+    return flagged

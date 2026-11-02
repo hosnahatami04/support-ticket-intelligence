@@ -1,5 +1,10 @@
 # 0002: Packaging, environment and project layout
 
+## Status
+The dependency-group decision below is superseded by
+[0008](0008-dependency-extras.md), which records the four extras the project
+actually ships. The `uv`, `src/` layout and Python-pin decisions still stand.
+
 ## Context
 The repository must be reproducible, keep CI light, and avoid accidental
 imports of the package from the working directory during tests.

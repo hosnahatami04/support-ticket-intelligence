@@ -17,14 +17,23 @@ exist for this dataset, so any metric that compares against a gold summary
   Fields the ticket does not state must be `null`, which makes "the model did
   not know" distinguishable from "the model invented something".
 - **A deterministic cache keyed by everything that can change the output** -
-  ticket text, prompt version, model tag, model digest and sampling
-  parameters. Evaluation reads only from this cache, so the reported KPIs are
-  reproducible without re-running the model.
-- **Reference-free faithfulness, in two layers.**
+  ticket text, prompt version label, a SHA-256 of the prompt *text*, model tag,
+  model digest and sampling parameters. Evaluation reads only from this cache,
+  so the reported KPIs are reproducible without re-running the model.
+  Hashing the prompt text is not redundant with the version label: keying on the
+  label alone meant editing a prompt file in place kept serving the previous
+  outputs, so an evaluation could report numbers the current prompt never
+  produced. The content hash makes any edit a cache miss.
+- **Reference-free faithfulness, in three layers.**
   1. A deterministic entity check: every number, email, URL and identifier-like
      code in the summary must appear in the ticket. Numbers are compared in a
      normalised form so `1,200` and `1200` match.
-  2. Sentence-level NLI with the ticket as premise, using
+  2. A quote check. `urgency_signals` is specified as wording quoted from the
+     ticket, so a quoted span that does not substantially appear in the source
+     is a fabrication the entity check cannot see - it contains no numbers or
+     codes to compare. `ungrounded_quote_rate` measures it by word overlap
+     against the ticket.
+  3. Sentence-level NLI with the ticket as premise, using
      `cross-encoder/nli-deberta-v3-small`.
 - **The NLI model's own accuracy is not asserted by the agent.** A balanced
   sample of 30 entailed and 30 not-entailed sentences is exported for the

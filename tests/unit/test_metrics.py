@@ -82,3 +82,26 @@ def test_min_class_recall_ignores_labels_only_in_pred() -> None:
     y_pred = ["a", "c", "b"]  # "c" only in pred
     label, _ = metrics.min_class_recall(y_true, y_pred)
     assert label in {"a", "b"}
+
+
+def test_bootstrap_holds_the_label_set_fixed_across_draws() -> None:
+    # Regression: recomputing the label set per resample let a draw that missed
+    # a rare class average over fewer, easier classes, biasing the interval up
+    # and pinning its upper bound at 1.0.
+    y_true = ["a"] * 95 + ["b"] * 4 + ["c"]
+    y_pred = list(y_true)
+    y_pred[0], y_pred[95], y_pred[99] = "b", "a", "a"
+
+    point, lo, hi = metrics.bootstrap_ci(y_true, y_pred, metrics.macro_f1, n_samples=500, seed=1)
+    assert lo <= hi
+    assert hi < 1.0  # a model scoring ~0.58 must not report an upper bound of 1.0
+    assert point < 1.0
+
+
+def test_macro_f1_accepts_an_explicit_label_set() -> None:
+    # A class absent from both arrays still counts toward the average when it is
+    # named, which is what keeps the bootstrap metric a fixed function.
+    y_true = ["a", "a"]
+    y_pred = ["a", "a"]
+    assert metrics.macro_f1(y_true, y_pred) == pytest.approx(1.0)
+    assert metrics.macro_f1(y_true, y_pred, labels=["a", "b"]) == pytest.approx(0.5)
