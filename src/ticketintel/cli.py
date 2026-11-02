@@ -114,5 +114,24 @@ def summarize_eval(generate: bool = True, latency: bool = True) -> None:
     typer.echo(f"nli review sample: {review_path}")
 
 
+@app.command()
+def evaluate(figures: bool = True, write_smoke: bool = False) -> None:
+    """Evaluate once on test with the frozen policy and write the final report."""
+    from ticketintel.config import load_settings
+    from ticketintel.evaluation import final, report, run_final
+
+    settings = load_settings()
+    results = run_final.run(settings)
+    json_path = final.write_results(results, settings)
+    md_path = report.write_results_md(results, settings)
+    if figures:
+        for path in run_final.make_figures(settings):
+            typer.echo(f"figure: {path}")
+    if write_smoke:
+        typer.echo(f"smoke kpis: {run_final.write_smoke_kpis(results, settings)}")
+    typer.echo(f"results: {json_path}")
+    typer.echo(f"report: {md_path}")
+
+
 if __name__ == "__main__":
     app()
