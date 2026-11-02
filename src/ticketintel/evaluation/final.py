@@ -62,9 +62,25 @@ def git_revision() -> str:
         out = subprocess.run(
             ["git", "rev-parse", "HEAD"], capture_output=True, text=True, timeout=10, check=False
         )
-        return out.stdout.strip() or "unknown"
+        revision = out.stdout.strip() or "unknown"
     except (OSError, subprocess.SubprocessError):
         return "unknown"
+    if revision == "unknown":
+        return revision
+    # A revision alone does not say the tree matched it. Without this suffix a
+    # report produced from edited files reads as though it came from a clean
+    # checkout, which is exactly the claim it cannot support.
+    try:
+        dirty = subprocess.run(
+            ["git", "status", "--porcelain"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return revision
+    return f"{revision}-dirty" if dirty.stdout.strip() else revision
 
 
 def label_index(classes: np.ndarray, labels: list[str]) -> np.ndarray:
