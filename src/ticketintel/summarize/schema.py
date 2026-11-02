@@ -36,6 +36,25 @@ class TicketSummary(BaseModel):
             return ", ".join(parts) if parts else None
         return value
 
+    @field_validator("urgency_signals", mode="before")
+    @classmethod
+    def _as_list(cls, value: object) -> object:
+        """Accept the shapes a model offers for "no urgency signals".
+
+        The mirror of `_join_list`. The prompt asks for an empty list, but a
+        model answers `null` for "none" and a bare string when it finds exactly
+        one phrase. Both are the right answer in the wrong container, and
+        refusing them threw away an otherwise valid summary. Empty strings are
+        dropped so a blank entry cannot become a claim to score.
+        """
+        if value is None:
+            return []
+        if isinstance(value, str):
+            return [value] if value.strip() else []
+        if isinstance(value, list):
+            return [str(item).strip() for item in value if item and str(item).strip()]
+        return value
+
     def text_fields(self) -> list[str]:
         # The free-text the deterministic entity check runs over.
         parts = [self.issue, self.customer_request, self.affected_area, *self.urgency_signals]

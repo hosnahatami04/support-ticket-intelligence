@@ -15,9 +15,14 @@ def test_nulls_are_allowed() -> None:
     assert s.urgency_signals == []
 
 
-def test_wrong_field_type_is_rejected() -> None:
+def test_a_genuinely_wrong_type_is_still_rejected() -> None:
+    # A string or a list is coerced, because both are the right information in
+    # the wrong container. A number is not a phrase in any container, so it
+    # still has to fail rather than be stringified into a fake signal.
     with pytest.raises(ValidationError):
-        TicketSummary.model_validate({"urgency_signals": "should be a list"})
+        TicketSummary.model_validate({"urgency_signals": 7})
+    with pytest.raises(ValidationError):
+        TicketSummary.model_validate({"issue": {"nested": "object"}})
 
 
 def test_text_fields_skips_empty_values() -> None:
@@ -100,3 +105,24 @@ def test_joined_fields_stay_available_to_the_entity_check() -> None:
 def test_a_plain_string_is_untouched() -> None:
     summary = TicketSummary.model_validate({"issue": "disk full", "urgency_signals": []})
     assert summary.issue == "disk full"
+
+
+def test_a_bare_string_urgency_signal_becomes_a_one_item_list() -> None:
+    # The mirror of the affected_area case: the model found exactly one phrase
+    # and answered with it directly instead of wrapping it in a list.
+    summary = TicketSummary.model_validate({"urgency_signals": "down since Monday"})
+    assert summary.urgency_signals == ["down since Monday"]
+
+
+def test_null_urgency_signals_means_none_were_found() -> None:
+    assert TicketSummary.model_validate({"urgency_signals": None}).urgency_signals == []
+
+
+def test_blank_urgency_entries_are_dropped() -> None:
+    # A blank entry would otherwise become an empty claim and be scored.
+    summary = TicketSummary.model_validate({"urgency_signals": ["real", None, "", "  "]})
+    assert summary.urgency_signals == ["real"]
+
+
+def test_urgency_signals_default_to_empty_when_absent() -> None:
+    assert TicketSummary.model_validate({"issue": "x"}).urgency_signals == []

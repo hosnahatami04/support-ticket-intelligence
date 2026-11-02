@@ -44,7 +44,7 @@ def test_repeat_request_is_served_from_cache(tmp_path: Path) -> None:
 
 
 def test_invalid_output_is_retried_once_then_succeeds(tmp_path: Path) -> None:
-    client = _CountingClient([{"urgency_signals": "not a list"}, {"issue": "ok"}], temperature=0.7)
+    client = _CountingClient([{"urgency_signals": 7}, {"issue": "ok"}], temperature=0.7)
     summary = summarize("t", client, TEMPLATE, SummaryCache(tmp_path), "digest")
     assert summary.issue == "ok"
     assert client.calls == 2
