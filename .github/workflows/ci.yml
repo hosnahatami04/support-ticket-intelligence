@@ -2,7 +2,9 @@ name: ci
 
 on:
   push:
-    branches: [main]
+    # Both long-lived branches. Pull requests target phase-0/bootstrap, so a
+    # trigger naming only main would leave every merge ungated on push.
+    branches: [main, phase-0/bootstrap]
   pull_request:
 
 jobs:
