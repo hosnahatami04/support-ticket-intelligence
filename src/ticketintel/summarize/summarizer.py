@@ -45,20 +45,32 @@ def summarize(
 
     prompt = render_prompt(template, ticket_text)
     last_error: Exception | None = None
+    attempts = 0
     # One retry: a model occasionally emits a field of the wrong shape, and a
     # single regeneration is cheap. A second failure is recorded, not hidden.
     for attempt in range(2):
+        attempts += 1
         try:
             raw = client.generate_json(prompt)
             summary = TicketSummary.model_validate(raw)
-        except (OllamaError, ValidationError) as exc:
+        except OllamaError as exc:
             last_error = exc
             logger.info("summary attempt failed", extra={"attempt": attempt, "error": str(exc)})
+            continue
+        except ValidationError as exc:
+            # Sampling is deterministic at temperature 0, so re-asking returns
+            # the identical reply and the retry cannot help. Spending a second
+            # call on it only hid the real reason behind an "after 2 attempts"
+            # message.
+            last_error = exc
+            logger.info("summary attempt failed", extra={"attempt": attempt, "error": str(exc)})
+            if client.config.temperature == 0.0:
+                break
             continue
         cache.put(key, summary.model_dump())
         return summary
 
-    raise SummarizationError(f"summary failed after 2 attempts: {last_error}")
+    raise SummarizationError(f"summary failed after {attempts} attempt(s): {last_error}")
 
 
 def summarize_from_cache_only(

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class TicketSummary(BaseModel):
@@ -17,6 +17,24 @@ class TicketSummary(BaseModel):
     urgency_signals: list[str] = Field(
         default_factory=list, description="Phrases in the ticket that signal urgency."
     )
+
+    @field_validator("issue", "customer_request", "affected_area", mode="before")
+    @classmethod
+    def _join_list(cls, value: object) -> object:
+        """Accept a list where one string was asked for.
+
+        A ticket that names two products ("Zoho CRM and Microsoft Dynamics
+        365") genuinely has two affected areas, and the model answers with a
+        list. That is the right information in the wrong container: rejecting
+        it discarded a correct summary, and because decoding is deterministic
+        at temperature 0 the retry produced the identical list, so the ticket
+        could never succeed. Joining is safe for faithfulness - every element
+        still has to survive the entity check.
+        """
+        if isinstance(value, list):
+            parts = [str(item).strip() for item in value if str(item).strip()]
+            return ", ".join(parts) if parts else None
+        return value
 
     def text_fields(self) -> list[str]:
         # The free-text the deterministic entity check runs over.

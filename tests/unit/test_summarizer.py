@@ -18,8 +18,8 @@ TEMPLATE = "Summarise:\n{ticket}"
 
 
 class _CountingClient(OllamaClient):
-    def __init__(self, responses: list[dict[str, object]]):
-        super().__init__(OllamaConfig(model="m", temperature=0.0))
+    def __init__(self, responses: list[dict[str, object]], temperature: float = 0.0):
+        super().__init__(OllamaConfig(model="m", temperature=temperature))
         self.responses = responses
         self.calls = 0
 
@@ -44,17 +44,28 @@ def test_repeat_request_is_served_from_cache(tmp_path: Path) -> None:
 
 
 def test_invalid_output_is_retried_once_then_succeeds(tmp_path: Path) -> None:
-    client = _CountingClient([{"urgency_signals": "not a list"}, {"issue": "ok"}])
+    client = _CountingClient([{"urgency_signals": "not a list"}, {"issue": "ok"}], temperature=0.7)
     summary = summarize("t", client, TEMPLATE, SummaryCache(tmp_path), "digest")
     assert summary.issue == "ok"
     assert client.calls == 2
 
 
 def test_two_invalid_outputs_raise(tmp_path: Path) -> None:
-    client = _CountingClient([{"urgency_signals": 1}, {"urgency_signals": 2}])
-    with pytest.raises(SummarizationError, match="after 2 attempts"):
+    # Non-zero temperature, so a retry can legitimately return something else.
+    client = _CountingClient([{"urgency_signals": 1}, {"urgency_signals": 2}], temperature=0.7)
+    with pytest.raises(SummarizationError, match="after 2 attempt"):
         summarize("t", client, TEMPLATE, SummaryCache(tmp_path), "digest")
     assert client.calls == 2
+
+
+def test_deterministic_decoding_is_not_retried(tmp_path: Path) -> None:
+    # Regression: at temperature 0 the reply is identical, so the retry burned a
+    # second call and reported "after 2 attempts" for a single real failure.
+    client = _CountingClient([{"urgency_signals": 1}])
+    assert client.config.temperature == 0.0
+    with pytest.raises(SummarizationError, match="after 1 attempt"):
+        summarize("t", client, TEMPLATE, SummaryCache(tmp_path), "digest")
+    assert client.calls == 1
 
 
 def test_cache_only_path_returns_none_on_miss(tmp_path: Path) -> None:

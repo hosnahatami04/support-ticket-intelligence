@@ -149,9 +149,14 @@ def _summarize(text: str) -> tuple[Any, FaithfulnessReport | None, str | None]:
         return None, None, str(exc)
 
     check = fcheck.check_entities(summary.text_fields(), text)
+    quotes = fcheck.ungrounded_quotes(summary.urgency_signals, text)
     return (
         summary,
-        FaithfulnessReport(unsupported_entities=check.unsupported, is_faithful=check.is_faithful),
+        FaithfulnessReport(
+            unsupported_entities=check.unsupported,
+            ungrounded_quotes=quotes,
+            is_faithful=check.is_faithful and not quotes,
+        ),
         None,
     )
 

@@ -71,3 +71,32 @@ def test_claims_preserve_acronyms() -> None:
 
 def test_claims_skip_missing_fields() -> None:
     assert TicketSummary().claims() == []
+
+
+def test_a_list_where_a_string_was_asked_for_is_joined() -> None:
+    # Regression: a ticket naming two products made the model answer
+    # affected_area as a list. That is correct information in the wrong
+    # container, and rejecting it threw away a usable summary; because decoding
+    # is deterministic the retry returned the same list, so the ticket could
+    # never succeed.
+    summary = TicketSummary.model_validate(
+        {"affected_area": ["Zoho CRM", "Microsoft Dynamics 365"], "urgency_signals": []}
+    )
+    assert summary.affected_area == "Zoho CRM, Microsoft Dynamics 365"
+
+
+def test_an_empty_list_becomes_none_not_an_empty_string() -> None:
+    summary = TicketSummary.model_validate({"issue": [], "urgency_signals": []})
+    assert summary.issue is None
+
+
+def test_joined_fields_stay_available_to_the_entity_check() -> None:
+    summary = TicketSummary.model_validate(
+        {"affected_area": ["Zoho CRM", "Dynamics 365"], "urgency_signals": []}
+    )
+    assert "Zoho CRM, Dynamics 365" in summary.text_fields()
+
+
+def test_a_plain_string_is_untouched() -> None:
+    summary = TicketSummary.model_validate({"issue": "disk full", "urgency_signals": []})
+    assert summary.issue == "disk full"

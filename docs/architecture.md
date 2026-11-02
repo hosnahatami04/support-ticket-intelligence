@@ -31,10 +31,11 @@ with the candidate queues and the reason attached. The thresholds live in
 `configs/policy.yaml` and are never computed at request time.
 
 Summarization is independent of routing. It is requested with
-`"summarize": true`, runs against a local model, and is checked in two ways:
+`"summarize": true`, runs against a local model, and is checked in three ways:
 deterministically, that every number, email address, URL and identifier in the
-summary appears in the ticket; and by entailment, sentence by sentence, with
-the ticket as the premise. If the model server is unreachable, the response
+summary appears in the ticket; by word overlap, that each span quoted into the
+urgency field is really in the ticket; and by entailment, sentence by sentence,
+with the ticket as the premise. If the model server is unreachable, the response
 still carries the routing decision and reports the summarization failure
 explicitly rather than failing the request.
 

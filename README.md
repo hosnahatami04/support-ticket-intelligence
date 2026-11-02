@@ -17,8 +17,8 @@ The headline numbers, measured once on a held-out test split with the model and
 the thresholds frozen beforehand: tickets routed automatically are wrong
 **3.3%** of the time, but only **7.7%** of tickets clear that bar; the conformal
 prediction sets cover the true queue **89.8%** of the time against a 90% target;
-and **0%** of generated summaries introduce a number, address or identifier that
-is absent from the ticket. That 7.7% automatic coverage badly misses its 60%
+and **0%** of the summaries the summarizer produced introduce a number, address
+or identifier that is absent from the ticket. That 7.7% automatic coverage badly misses its 60%
 target, and is reported as measured rather than tuned away — see
 [reports/results.md](reports/results.md) for the full picture, including the
 error-versus-coverage trade-off and what did not work.

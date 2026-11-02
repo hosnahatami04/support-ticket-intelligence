@@ -23,6 +23,9 @@ class TriageRequest(BaseModel):
 
 class FaithfulnessReport(BaseModel):
     unsupported_entities: list[str] = Field(default_factory=list)
+    # Spans quoted into the urgency field that are not in the ticket. These
+    # carry no number or code, so the entity check above cannot see them.
+    ungrounded_quotes: list[str] = Field(default_factory=list)
     is_faithful: bool = True
 
 

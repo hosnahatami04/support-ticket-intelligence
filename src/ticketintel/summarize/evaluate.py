@@ -81,7 +81,7 @@ def generate_summaries(settings: Settings, cfg: SummarizerSettings) -> dict[str,
 
     if failures:
         write_failures(failures, settings)
-    logger.info("generated summaries", extra={"ok": ok, "failed": len(failures)})
+    logger.info("summaries produced", extra={"ok": ok, "failed": len(failures)})
     return {"ok": ok, "failed": len(failures)}
 
 
