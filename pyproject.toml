@@ -89,8 +89,21 @@ module = [
     "sentence_transformers.*",
     "torch.*",
     "transformers.*",
+    "fastapi.*",
+    "starlette.*",
+    "prometheus_client.*",
+    "streamlit.*",
+    "requests.*",
+    "uvicorn.*",
 ]
 ignore_missing_imports = true
+
+# Route decorators are typed when fastapi is installed, but the light CI job
+# type-checks without the service extra, where they degrade to Any and trip
+# strict mode's untyped-decorator rule. The route bodies stay fully typed.
+[[tool.mypy.overrides]]
+module = ["ticketintel.service.api"]
+disallow_untyped_decorators = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
