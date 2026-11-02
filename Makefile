@@ -1,6 +1,6 @@
 export PYTHONHASHSEED := 0
 
-.PHONY: setup lint format typecheck test test-data cov data calibrate summarize-eval
+.PHONY: setup lint format typecheck test test-data test-ci cov data calibrate summarize-eval
 
 setup:
 	uv sync --extra dev
@@ -36,3 +36,10 @@ calibrate:
 summarize-eval:
 	uv sync --extra dev --extra ml
 	uv run ticketintel summarize-eval
+
+# Reproduces the light CI job exactly: dev dependencies only, so a module that
+# type-checks locally because the heavy extras are installed still fails here.
+test-ci:
+	uv run --isolated --extra dev mypy
+	uv run --isolated --extra dev ruff check src tests benchmarks
+	uv run --isolated --extra dev pytest -m "not ml and not data"
