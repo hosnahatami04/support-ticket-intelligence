@@ -206,3 +206,32 @@ def test_smoke_kpi_fixture_is_present_and_sane() -> None:
     assert set(snapshot) == {"queue_macro_f1", "priority_macro_f1"}
     for value in snapshot.values():
         assert 0.0 <= value <= 1.0
+
+
+def test_git_revision_marks_a_dirty_tree(monkeypatch: pytest.MonkeyPatch) -> None:
+    # A revision alone does not say the tree matched it. Without the marker a
+    # report produced from edited files reads as though it came from a clean
+    # checkout, which is the one claim it cannot support.
+    import subprocess
+
+    calls: list[list[str]] = []
+
+    def fake_run(cmd: list[str], **_: object) -> subprocess.CompletedProcess[str]:
+        calls.append(cmd)
+        out = "deadbeef\n" if "rev-parse" in cmd else " M src/thing.py\n"
+        return subprocess.CompletedProcess(cmd, 0, stdout=out, stderr="")
+
+    monkeypatch.setattr(final.subprocess, "run", fake_run)
+    assert final.git_revision() == "deadbeef-dirty"
+    assert any("status" in c for c in calls)
+
+
+def test_git_revision_is_bare_when_the_tree_is_clean(monkeypatch: pytest.MonkeyPatch) -> None:
+    import subprocess
+
+    def fake_run(cmd: list[str], **_: object) -> subprocess.CompletedProcess[str]:
+        out = "deadbeef\n" if "rev-parse" in cmd else ""
+        return subprocess.CompletedProcess(cmd, 0, stdout=out, stderr="")
+
+    monkeypatch.setattr(final.subprocess, "run", fake_run)
+    assert final.git_revision() == "deadbeef"
