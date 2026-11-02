@@ -1,13 +1,14 @@
 {
-  "compression_ratio": 0.49470135933833737,
+  "compression_ratio": 0.5153756625832605,
   "latency": {
-    "p50_ms": 1674.7969999996712,
-    "p95_ms": 2540.453489999709,
+    "p50_ms": 1933.270800000173,
+    "p95_ms": 2644.977414999812,
     "samples": 10.0
   },
-  "nli_entailed_rate": 0.4158253968253968,
+  "nli_entailed_rate": 0.5016428571428571,
   "sample_size": 300,
   "schema_valid_rate": 1.0,
   "summaries_in_cache": 300,
+  "ungrounded_quote_rate": 0.1,
   "unsupported_entity_rate": 0.0
 }

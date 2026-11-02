@@ -162,9 +162,14 @@ of primary metric to why the lighter model was selected over the transformer.
   novelty signal here.
 - **The conformal guarantee is marginal, not per queue.** Coverage holds on
   average across tickets; it is not guaranteed for any individual queue.
-- **The NLI faithfulness number is a floor, not a verdict.** It reads 0.4158,
+- **The NLI faithfulness number is a floor, not a verdict.** It reads 0.5016,
   but the entailment model produces false negatives on claims the ticket
   supports almost verbatim, and the summarizer genuinely does put topic labels
   in the urgency field. A balanced 60-sentence sample is exported for manual
   adjudication; no claim is made about NLI accuracy until that review exists.
-- **Summarization is slow on CPU**, around 1.7 s per ticket at the median.
+- **One in ten summaries quotes urgency wording that is not in the ticket.**
+  The urgency field is specified as the ticket's own words, and
+  `ungrounded_quote_rate` reads 0.1000. This one is measured by string
+  overlap, not by a model, so it is a fact about the summaries rather than a
+  judgement about them.
+- **Summarization is slow on CPU**, around 1.9 s per ticket at the median.

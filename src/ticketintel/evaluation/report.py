@@ -204,7 +204,9 @@ def render_results_md(results: dict[str, Any]) -> str:
 
     summ = results.get("summarization")
     if summ:
-        lines.append("## Summarization (fixed 300-ticket sample)")
+        size = summ.get("sample_size")
+        scope = f"fixed {size}-ticket sample" if size else "fixed test sample"
+        lines.append(f"## Summarization ({scope})")
         lines.append("")
         lines.append("| metric | value | target |")
         lines.append("| --- | --- | --- |")
@@ -212,6 +214,8 @@ def render_results_md(results: dict[str, Any]) -> str:
         lines.append(
             f"| unsupported entities | {_fmt(summ['unsupported_entity_rate'])} | <= 0.02 |"
         )
+        if "ungrounded_quote_rate" in summ:
+            lines.append(f"| ungrounded quotes | {_fmt(summ['ungrounded_quote_rate'])} | report |")
         lines.append(f"| NLI entailed | {_fmt(summ['nli_entailed_rate'])} | >= 0.90 |")
         lines.append(f"| compression | {_fmt(summ['compression_ratio'])} | report |")
         lines.append("")

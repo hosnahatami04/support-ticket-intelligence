@@ -36,7 +36,7 @@
   "provenance": {
     "dataset_id": "Tobi-Bueck/customer-support-tickets",
     "dataset_revision": "ddf1c81a5475992c4fa6752bf1e8b4e31f07bbeb",
-    "git_revision": "b7dcc14d35a1e8efa23820e7bed485875b290f54",
+    "git_revision": "c676d904597d57413febec5cf48a290a846a87de",
     "processed_data_sha256": "d5a1b29844089e162cfdbe62a45d5e8f81819e6d2843249f0180147d9fc03a9f",
     "seed": "42"
   },
@@ -57,19 +57,22 @@
       "recall": 0.34285714285714286
     },
     "novel_queue_auroc": 0.5744783144843603,
+    "risk_at_target_coverage": 0.24042553191489358,
+    "target_coverage": 0.6,
     "test_rows": 1567
   },
   "summarization": {
-    "compression_ratio": 0.49470135933833737,
+    "compression_ratio": 0.5153756625832605,
     "latency": {
-      "p50_ms": 1674.7969999996712,
-      "p95_ms": 2540.453489999709,
+      "p50_ms": 1933.270800000173,
+      "p95_ms": 2644.977414999812,
       "samples": 10.0
     },
-    "nli_entailed_rate": 0.4158253968253968,
+    "nli_entailed_rate": 0.5016428571428571,
     "sample_size": 300,
     "schema_valid_rate": 1.0,
     "summaries_in_cache": 300,
+    "ungrounded_quote_rate": 0.1,
     "unsupported_entity_rate": 0.0
   },
   "what_didnt_work": [
@@ -90,8 +93,9 @@
     "  not what is holding the error rate down.",
     "- The 5% auto-route error target and the 60% coverage target cannot hold at",
     "  once on this dataset. The error target is met comfortably, but only a",
-    "  small share of tickets clear the bar; reaching 60% coverage would cost",
-    "  roughly 27% error. The trade-off is reported rather than tuned away.",
+    "  small share of tickets clear the bar. The cost of reaching the coverage",
+    "  target is measured and stated in the queue table above; the trade-off is",
+    "  reported rather than tuned away.",
     "- Max calibrated probability barely separates the held-out queue from known",
     "  ones, so novel-queue AUROC falls well short of 0.75. Confidence alone is a",
     "  weak novelty signal here.",

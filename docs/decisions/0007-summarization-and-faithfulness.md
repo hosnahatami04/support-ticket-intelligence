@@ -35,6 +35,17 @@ exist for this dataset, so any metric that compares against a gold summary
      against the ticket.
   3. Sentence-level NLI with the ticket as premise, using
      `cross-encoder/nli-deberta-v3-small`.
+- **Prompts are versioned as files, never edited in place.** `prompts/` holds
+  one file per version and `configs/summarizer.yaml` names the active one.
+  `summary_v1` stated the rules and the JSON shape; `summary_v2` is in use and
+  adds a definition per field and a set of tests for `urgency_signals`, after
+  v1 filled that field with topic labels ("project Management") that carry no
+  time pressure. v1 stays in the repository so an earlier number can be
+  reproduced. Because the cache key includes a hash of the prompt text, a new
+  version is a cache miss and cannot inherit the previous version's outputs.
+  The urgency tests are deliberately written as conditions rather than sample
+  phrases: an earlier revision listed example wording and the model copied
+  those examples into summaries of tickets that never contained them.
 - **The NLI model's own accuracy is not asserted by the agent.** A balanced
   sample of 30 entailed and 30 not-entailed sentences is exported for the
   repository owner to review by hand; no claim about NLI accuracy is made
@@ -58,27 +69,41 @@ On the fixed 300-ticket test sample (`reports/interim/summarization_eval.json`):
 
 | KPI | Result | Target |
 | --- | --- | --- |
-| Schema validity | 1.00 | >= 0.98 |
-| Unsupported entities | 0.00 | <= 0.02 |
-| NLI entailed | 0.42 | >= 0.90 |
-| Compression | 0.49 | report |
-| Latency p50 / p95 | 1.67 s / 2.54 s | report |
+| Schema validity | 1.0000 | >= 0.98 |
+| Unsupported entities | 0.0000 | <= 0.02 |
+| Ungrounded quotes | 0.1000 | report |
+| NLI entailed | 0.5016 | >= 0.90 |
+| Compression | 0.5154 | report |
+| Latency p50 / p95 | 1.93 s / 2.64 s | report |
 
-The NLI rate misses its target and is reported as measured. Two findings sit
+Schema validity reaching 1.0000 is the result of a schema fix, not a better
+model. One ticket named two products, so the model answered `affected_area`
+with a list and validation rejected a summary whose content was correct; the
+reply was identical on every retry because decoding is deterministic. A list
+is now joined into one string, and every element still has to pass the entity
+check.
+
+The NLI rate misses its target and is reported as measured. Three findings sit
 behind it, and they are different in kind:
 
 - **Hypothesis formatting was a measurement bug, now fixed.** The first run
   fed the raw fields to the NLI model and scored 0.22. Those fields are noun
   phrases, and an entailment model scores propositions: the same content is
   `neutral` as "Disruptions" and `entailment` as "The issue is disruptions."
-  Scoring declarative claims instead raised the rate to 0.42. The fix changed
-  the measurement, not the summaries.
+  Scoring declarative claims instead raised the rate. The fix changed the
+  measurement, not the summaries.
+- **The cache was serving outputs from an older prompt.** The key used the
+  prompt version label and not the prompt text, so prompt edits did not
+  invalidate it and the reported rate had not been produced by the prompt in
+  the repository. Every number in this table was regenerated after that fix.
 - **The remaining gap mixes NLI error with real summary weakness.** Some
   flagged claims are supported almost verbatim by the ticket ("The affected
   area is healthcare provider's systems" against "impacting the healthcare
   provider's systems") and are model false negatives. Others are genuinely
-  poor: the model sometimes fills `urgency_signals` with topic labels such as
-  "project Management", which are not urgency signals at all.
+  poor, and the ungrounded-quote rate now puts a number on one of those
+  failure modes: in 10% of summaries the urgency field quotes wording that is
+  not in the ticket. That is measured deterministically, so unlike the NLI
+  rate it does not depend on a model's judgement.
 
 Because the two cannot be separated automatically, no claim is made here about
 the NLI model's accuracy or about the true faithfulness rate. The balanced

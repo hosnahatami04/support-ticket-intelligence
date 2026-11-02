@@ -7,7 +7,7 @@ Every number here comes from a single pass over the test split with the model an
 - dataset_id: `Tobi-Bueck/customer-support-tickets`
 - dataset_revision: `ddf1c81a5475992c4fa6752bf1e8b4e31f07bbeb`
 - processed_data_sha256: `d5a1b29844089e162cfdbe62a45d5e8f81819e6d2843249f0180147d9fc03a9f`
-- git_revision: `b7dcc14d35a1e8efa23820e7bed485875b290f54`
+- git_revision: `c676d904597d57413febec5cf48a290a846a87de`
 - seed: `42`
 
 ## Queue routing (test)
@@ -23,6 +23,7 @@ Every number here comes from a single pass over the test split with the model an
 | conformal coverage | 0.8979 | 0.90 +/- 0.02 |
 | mean conformal set size | 3.2463 | report |
 | novel-queue AUROC | 0.5745 | >= 0.75 |
+| error if coverage were raised to 0.6000 | 0.2404 | the cost of the coverage target |
 
 ## Priority (test)
 
@@ -37,8 +38,9 @@ Every number here comes from a single pass over the test split with the model an
 | --- | --- | --- |
 | schema validity | 1.0000 | >= 0.98 |
 | unsupported entities | 0.0000 | <= 0.02 |
-| NLI entailed | 0.4158 | >= 0.90 |
-| compression | 0.4947 | report |
+| ungrounded quotes | 0.1000 | report |
+| NLI entailed | 0.5016 | >= 0.90 |
+| compression | 0.5154 | report |
 
 ## Ablations
 
@@ -77,8 +79,9 @@ Every number here comes from a single pass over the test split with the model an
   not what is holding the error rate down.
 - The 5% auto-route error target and the 60% coverage target cannot hold at
   once on this dataset. The error target is met comfortably, but only a
-  small share of tickets clear the bar; reaching 60% coverage would cost
-  roughly 27% error. The trade-off is reported rather than tuned away.
+  small share of tickets clear the bar. The cost of reaching the coverage
+  target is measured and stated in the queue table above; the trade-off is
+  reported rather than tuned away.
 - Max calibrated probability barely separates the held-out queue from known
   ones, so novel-queue AUROC falls well short of 0.75. Confidence alone is a
   weak novelty signal here.

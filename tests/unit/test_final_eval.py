@@ -149,14 +149,32 @@ def test_results_md_omits_summarization_when_absent() -> None:
 def test_results_md_includes_summarization_when_present() -> None:
     results = _minimal_results()
     results["summarization"] = {
+        "sample_size": 300,
+        "schema_valid_rate": 1.0,
+        "unsupported_entity_rate": 0.0,
+        "ungrounded_quote_rate": 0.1,
+        "nli_entailed_rate": 0.42,
+        "compression_ratio": 0.49,
+    }
+    text = report.render_results_md(results)
+    assert "## Summarization (fixed 300-ticket sample)" in text
+    assert "0.4200" in text
+    assert "| ungrounded quotes | 0.1000 | report |" in text
+
+
+def test_results_md_survives_a_summarization_block_without_a_sample_size() -> None:
+    # The heading reports the sample size rather than hardcoding 300, so a
+    # partial block must still render instead of raising KeyError.
+    results = _minimal_results()
+    results["summarization"] = {
         "schema_valid_rate": 1.0,
         "unsupported_entity_rate": 0.0,
         "nli_entailed_rate": 0.42,
         "compression_ratio": 0.49,
     }
     text = report.render_results_md(results)
-    assert "## Summarization" in text
-    assert "0.4200" in text
+    assert "## Summarization (fixed test sample)" in text
+    assert "ungrounded quotes" not in text
 
 
 def test_figures_are_written(tmp_path: Path) -> None:
