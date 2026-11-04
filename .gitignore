@@ -40,7 +40,8 @@ hf_cache/
 # Project data and artifacts (regenerated locally). Anchored to the repo root
 # so they do not also match the src/ticketintel/data package.
 /data/
-/artifacts/
+/artifacts/*
+!/artifacts/.gitkeep
 
 # OS and editor noise
 .DS_Store
