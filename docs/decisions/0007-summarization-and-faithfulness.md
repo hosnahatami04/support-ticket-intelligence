@@ -71,10 +71,26 @@ On the fixed 300-ticket test sample (`reports/interim/summarization_eval.json`):
 | --- | --- | --- |
 | Schema validity | 1.0000 | >= 0.98 |
 | Unsupported entities | 0.0000 | <= 0.02 |
-| Ungrounded quotes | 0.1000 | report |
+| Ungrounded quotes | 0.0567 | report |
 | NLI entailed | 0.5016 | >= 0.90 |
 | Compression | 0.5154 | report |
-| Latency p50 / p95 | 1.93 s / 2.64 s | report |
+| Latency p50 / p95 | 2.15 s / 3.00 s (40 calls) | report |
+
+The ungrounded-quote rate fell from 0.1000 to 0.0567 because the detector was
+corrected, not because the summaries changed. The first version compared bare
+whitespace-split tokens, so a quote of "down" never matched a ticket reading
+"down." and 19 correctly quoted phrases were counted as fabrications. It also
+compared word sets, which ignores order: "the system is down" scored a perfect
+match against a ticket saying "the system is not down", and phrases rebuilt
+from the ticket's own words passed as quotations. Fixing both removed 19 false
+positives and found 6 fabrications the old check had missed - every one of
+those 6 inspected by hand and confirmed to be a paraphrase presented as a
+quotation.
+
+Latency is now measured over 40 calls rather than 10. A p95 taken from ten
+samples is the maximum of ten draws: an unrelated stall on the host produced a
+6.30 s p95 on an unchanged code path, which the report would have published as
+a measured latency.
 
 Schema validity reaching 1.0000 is the result of a schema fix, not a better
 model. One ticket named two products, so the model answered `affected_area`
