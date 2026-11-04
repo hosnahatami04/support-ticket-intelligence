@@ -48,6 +48,7 @@ def run_tfidf_baseline(settings: Settings) -> dict[str, object]:
     val = _load_split(settings, "validation")
     out: dict[str, object] = {}
 
+    settings.paths.artifacts.mkdir(parents=True, exist_ok=True)
     for task, column in TASKS.items():
         model, c_scores = select_c(
             train[schema.TEXT].tolist(),
@@ -55,6 +56,10 @@ def run_tfidf_baseline(settings: Settings) -> dict[str, object]:
             val[schema.TEXT].tolist(),
             val[column].tolist(),
         )
+        # Persist the fitted classifier so the service can load it. Without
+        # this the baseline command would compute validation metrics and
+        # throw the model away, leaving /triage with no artifact to open.
+        model.save(settings.paths.artifacts / f"tfidf_{task}.joblib")
         proba = model.predict_proba(val[schema.TEXT].tolist())
         y_pred = model.classes_[proba.argmax(axis=1)].tolist()
         evaluation = evaluate_predictions(task, val[column].tolist(), y_pred, list(val.index))

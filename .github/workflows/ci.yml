@@ -82,21 +82,60 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install data and ML dependencies for training
+        run: uv sync --extra dev --extra data --extra ml
+
+      # The image ships the trained TF-IDF classifiers. Without this step the
+      # build would still succeed, but /triage would return 503 inside the
+      # container. We train before building so the smoke test below can drive
+      # a real prediction through the service.
+      - name: Build the processed dataset
+        run: uv run ticketintel data
+
+      - name: Train the TF-IDF baseline
+        run: uv run ticketintel baseline
+
       - name: Build the runtime image
         run: docker build --target runtime -t ticketintel:ci .
 
-      - name: Check the image starts and reports health
+      # The gate has two parts. First the container must report status "ok"
+      # (not "degraded") on /health, which means both the queue model and the
+      # policy loaded. Then a real POST to /triage must return an action — a
+      # curl against /health alone used to pass when the model was missing.
+      - name: Gate on a real triage request
         run: |
+          set -euo pipefail
           docker run -d --name ticketintel-ci -p 8000:8000 ticketintel:ci
-          for i in $(seq 1 30); do
-            if curl -fsS http://localhost:8000/health >/dev/null 2>&1; then
-              echo "health endpoint responded"
-              docker rm -f ticketintel-ci
-              exit 0
+          trap 'docker logs ticketintel-ci || true; docker rm -f ticketintel-ci || true' EXIT
+
+          status=""
+          for _ in $(seq 1 30); do
+            if body=$(curl -fsS http://localhost:8000/health 2>/dev/null); then
+              status=$(printf '%s' "$body" | python -c 'import json,sys; print(json.load(sys.stdin)["status"])')
+              if [ "$status" = "ok" ]; then
+                echo "health status: ok"
+                break
+              fi
             fi
             sleep 2
           done
-          echo "the service never became reachable"
-          docker logs ticketintel-ci
-          docker rm -f ticketintel-ci
-          exit 1
+          if [ "$status" != "ok" ]; then
+            echo "the service never reported status ok (last status: ${status:-unreachable})"
+            exit 1
+          fi
+
+          response=$(curl -fsS -X POST http://localhost:8000/triage \
+            -H 'Content-Type: application/json' \
+            -d '{"subject":"Password reset email never arrives","body":"I requested a reset twice and nothing came through.","summarize":false}')
+          echo "triage response: $response"
+          action=$(printf '%s' "$response" | python -c 'import json,sys; print(json.load(sys.stdin)["action"])')
+          case "$action" in
+            auto_route|human_review) echo "triage returned a valid action: $action" ;;
+            *) echo "triage did not return a valid action: $action"; exit 1 ;;
+          esac

@@ -29,6 +29,11 @@ COPY --from=build /opt/venv /opt/venv
 COPY src ./src
 COPY configs ./configs
 COPY prompts ./prompts
+# Trained TF-IDF classifiers. The triage endpoint returns 503 "model not loaded"
+# without them, so the image is only shippable once `ticketintel baseline` has
+# been run. The dockerignore keeps the transformer weights and caches out of
+# this copy to hold the image size down.
+COPY artifacts ./artifacts
 
 USER ticketintel
 EXPOSE 8000
