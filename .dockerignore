@@ -1,0 +1,23 @@
+# Keep the build context small and deterministic. The runtime image only needs
+# the TF-IDF classifiers; the transformer weights, caches and intermediate
+# training outputs stay out of the image because the triage endpoint does not
+# use them.
+
+.git
+.github
+.venv
+.mypy_cache
+.ruff_cache
+.pytest_cache
+__pycache__
+
+data
+reports
+tests
+benchmarks
+docs
+
+artifacts/transformer_*
+artifacts/embedding_cache
+artifacts/summary_cache
+artifacts/embeddings_*.joblib

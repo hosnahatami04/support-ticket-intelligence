@@ -55,12 +55,32 @@ libraries: the API and the evaluation harness call exactly the same code.
 
 ## Installation for users
 
+**Prerequisite — train the classifiers first.** The triage endpoint needs the
+TF-IDF models, and they are not committed to the repository. One-time setup:
+
+```bash
+uv sync --extra dev --extra data --extra ml
+uv run ticketintel data          # downloads the pinned dataset
+uv run ticketintel baseline      # writes artifacts/tfidf_queue.joblib + tfidf_priority.joblib
+```
+
+Without this step `/triage` answers `503 model or policy is not loaded`, and
+`docker compose` mounts an empty `artifacts/` into the api container, so the
+same error reaches you through the UI.
+
 With Docker, which brings up the API, the local summarization model and the
 console together:
 
 ```bash
 docker compose up -d --wait
 ```
+
+> **Note on the Ollama service.** The compose file pulls the summarizer weights
+> from `registry.ollama.ai`, which is not reachable from every network. If the
+> `ollama-pull` step fails the API still serves triage decisions, and
+> `summary_error` carries the pull or connection failure. Summarization can
+> also be run against an Ollama daemon on the host by pointing
+> `TICKETINTEL_SUMMARIZER__HOST` at it before `docker compose up`.
 
 Then open the console at <http://localhost:8501>, paste a ticket or pick one of
 the built-in examples, and press Triage. A clear ticket is routed
