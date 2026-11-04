@@ -167,9 +167,10 @@ of primary metric to why the lighter model was selected over the transformer.
   supports almost verbatim, and the summarizer genuinely does put topic labels
   in the urgency field. A balanced 60-sentence sample is exported for manual
   adjudication; no claim is made about NLI accuracy until that review exists.
-- **One in ten summaries quotes urgency wording that is not in the ticket.**
+- **One summary in eighteen quotes urgency wording that is not in the ticket.**
   The urgency field is specified as the ticket's own words, and
-  `ungrounded_quote_rate` reads 0.1000. This one is measured by string
-  overlap, not by a model, so it is a fact about the summaries rather than a
-  judgement about them.
-- **Summarization is slow on CPU**, around 1.9 s per ticket at the median.
+  `ungrounded_quote_rate` reads 0.0567. This one is measured by word overlap,
+  adjacent word pairs and negation agreement rather than by a model, so it is
+  a fact about the summaries rather than a judgement about them.
+- **Summarization is slow on CPU**, around 2.2 s per ticket at the median and
+  3.0 s at the 95th percentile, over 40 timed calls.

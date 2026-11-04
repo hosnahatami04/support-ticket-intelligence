@@ -156,8 +156,12 @@ def evaluate(
     }
 
 
-def measure_latency(settings: Settings, cfg: SummarizerSettings, n: int = 10) -> dict[str, float]:
+def measure_latency(settings: Settings, cfg: SummarizerSettings, n: int = 40) -> dict[str, float]:
     # Timed against the live model, so this is excluded from the cached path.
+    # n=40 rather than 10: a p95 taken from ten samples is essentially the
+    # maximum of ten draws, and a single unrelated stall on the host then lands
+    # in the report as a measured latency. Observed swings of 3.1 s to 6.3 s on
+    # an unchanged code path came from exactly that.
     client = OllamaClient(
         OllamaConfig(
             model=cfg.model, host=cfg.host, temperature=cfg.temperature, timeout_s=cfg.timeout_s
@@ -178,6 +182,7 @@ def measure_latency(settings: Settings, cfg: SummarizerSettings, n: int = 10) ->
     return {
         "p50_ms": float(np.percentile(timings, 50)),
         "p95_ms": float(np.percentile(timings, 95)),
+        "max_ms": float(np.max(timings)),
         "samples": float(len(timings)),
     }
 

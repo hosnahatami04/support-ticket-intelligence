@@ -114,3 +114,14 @@ def test_failures_are_recorded_with_their_reason(tmp_path: Path) -> None:
     assert written == failures
     assert "bad json" in written[0]["reason"]
     assert path.name == "summarization_failures.json"
+
+
+def test_latency_defaults_to_a_sample_large_enough_for_a_p95() -> None:
+    # Regression: the default was 10, which makes p95 the maximum of ten draws.
+    # A single unrelated stall on the host then lands in the report as a
+    # measured latency; an unchanged code path was observed swinging from
+    # 3.1 s to 6.3 s for that reason alone.
+    import inspect
+
+    default = inspect.signature(ev.measure_latency).parameters["n"].default
+    assert default >= 20, "a p95 needs more than a handful of samples"

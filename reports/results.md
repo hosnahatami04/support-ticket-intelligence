@@ -7,7 +7,7 @@ Every number here comes from a single pass over the test split with the model an
 - dataset_id: `Tobi-Bueck/customer-support-tickets`
 - dataset_revision: `ddf1c81a5475992c4fa6752bf1e8b4e31f07bbeb`
 - processed_data_sha256: `d5a1b29844089e162cfdbe62a45d5e8f81819e6d2843249f0180147d9fc03a9f`
-- git_revision: `0251d150b4b9f56f85531ab55935fd144d1cd37a`
+- git_revision: `6dcc25219420a284790ca3f56386780be005ae72-dirty`
 - seed: `42`
 
 ## Queue routing (test)
@@ -38,7 +38,7 @@ Every number here comes from a single pass over the test split with the model an
 | --- | --- | --- |
 | schema validity | 1.0000 | >= 0.98 |
 | unsupported entities | 0.0000 | <= 0.02 |
-| ungrounded quotes | 0.1000 | report |
+| ungrounded quotes | 0.0567 | report |
 | NLI entailed | 0.5016 | >= 0.90 |
 | compression | 0.5154 | report |
 

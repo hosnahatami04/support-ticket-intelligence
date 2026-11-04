@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from ticketintel.summarize.faithfulness import check_entities, split_sentences
+from ticketintel.summarize.faithfulness import (
+    check_entities,
+    split_sentences,
+    ungrounded_quotes,
+)
 from ticketintel.summarize.nli import entailed_fraction
 
 SOURCE = (
@@ -94,3 +98,53 @@ def test_empty_quotes_are_ignored() -> None:
     from ticketintel.summarize.faithfulness import ungrounded_quotes
 
     assert ungrounded_quotes(["", "   "], SOURCE) == []
+
+
+_SRC = (
+    "The system is not down. We were told the outage would last three days, "
+    "but it has not started yet and nothing is blocked."
+)
+_PUNCT = "Service is down. Users are blocked, and billing failed!"
+
+
+def test_a_quote_is_not_flagged_for_the_punctuation_beside_it() -> None:
+    # Regression: tokens were split on whitespace only, so a source reading
+    # "down." never matched a quote of "down" and every such verbatim quote was
+    # counted as a fabrication. That inflated the reported rate.
+    assert ungrounded_quotes(["down"], _PUNCT) == []
+    assert ungrounded_quotes(["blocked"], _PUNCT) == []
+    assert ungrounded_quotes(["billing failed"], _PUNCT) == []
+
+
+def test_dropping_a_negation_is_flagged() -> None:
+    # Regression: word overlap ignores order, so "the system is down" scored a
+    # perfect match against "The system is not down" - the one case where a
+    # quote asserts the opposite of the ticket.
+    assert ungrounded_quotes(["the system is down"], _SRC) == ["the system is down"]
+
+
+def test_adding_a_negation_is_flagged() -> None:
+    assert ungrounded_quotes(["billing is not failed"], _PUNCT)
+
+
+def test_a_preserved_negation_is_not_flagged() -> None:
+    assert ungrounded_quotes(["the system is not down"], _SRC) == []
+    assert ungrounded_quotes(["nothing is blocked"], _SRC) == []
+
+
+def test_a_negation_in_an_unrelated_clause_does_not_flag_a_good_quote() -> None:
+    # The source negates twice, but neither negation belongs to this phrase.
+    # Comparing against the best-matching span rather than the span between the
+    # first and last matching word is what keeps this from being flagged.
+    assert ungrounded_quotes(["the outage would last three days"], _SRC) == []
+
+
+def test_the_tickets_own_words_reassembled_into_a_new_phrase_is_flagged() -> None:
+    # Every word is present, so overlap alone cannot tell this from a quote.
+    # Adjacent word pairs can: a real quotation keeps its pairs intact.
+    assert ungrounded_quotes(["down three days blocked outage"], _SRC)
+    assert ungrounded_quotes(["failed billing users"], _PUNCT)
+
+
+def test_a_verbatim_multiword_quote_survives_the_pair_check() -> None:
+    assert ungrounded_quotes(["users are blocked"], _PUNCT) == []
