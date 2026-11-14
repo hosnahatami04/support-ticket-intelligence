@@ -36,7 +36,7 @@
   "provenance": {
     "dataset_id": "Tobi-Bueck/customer-support-tickets",
     "dataset_revision": "ddf1c81a5475992c4fa6752bf1e8b4e31f07bbeb",
-    "git_revision": "6dcc25219420a284790ca3f56386780be005ae72-dirty",
+    "git_revision": "c35531b2b2d8c0770c3a0bf610c1dba0dee1b3da",
     "processed_data_sha256": "d5a1b29844089e162cfdbe62a45d5e8f81819e6d2843249f0180147d9fc03a9f",
     "seed": "42"
   },
